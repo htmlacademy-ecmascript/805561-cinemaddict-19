@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Антонина Хрусталева](https://up.htmlacademy.ru/ecmascript/19/user/805561).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Кислый](https://htmlacademy.ru/profile/smart-grizzly).
 
 ---
 
