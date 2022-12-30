@@ -12,7 +12,7 @@ function getRandomInteger(min, max) {
 // Результат: число с плавающей точкой из диапазона "от...до" с указанным "количеством знаков после запятой"
 function getRandomFractionalNumber(min, max, numberSymbols) {
   if(max > min && min >= 0 && numberSymbols >= 0){
-    const randomNumber = (Math.random() * (max - min)) + min;  //случайное дробное в диапазоне [min, max)
+    const randomNumber = (Math.random() * (max - min)) + min; //случайное дробное в диапазоне [min, max)
     const cropNumber = randomNumber.toFixed(numberSymbols);
 
     return parseFloat(cropNumber);
@@ -39,4 +39,4 @@ function getArrayRandomElements (array) {
 
 const humanizeDate = (date, templete) => dayjs(date).format(templete);
 
-export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement,  getRandomFractionalNumber};
+export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement, getRandomFractionalNumber};
