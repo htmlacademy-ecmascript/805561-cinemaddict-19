@@ -1,11 +1,12 @@
 import {createElement} from '../render.js';
 
+const createPopupInnerTemplate = () => (
+  '<div class="film-details__inner"></div>'
+);
 
-const createShowMoreButtonTemplate = () => '<button class="films-list__show-more">Show more</button>';
-
-export default class ShowMoreButtonView {
+export default class PopupInnerView {
   getTemplate() {
-    return createShowMoreButtonTemplate();
+    return createPopupInnerTemplate();
   }
 
   getElement() {
