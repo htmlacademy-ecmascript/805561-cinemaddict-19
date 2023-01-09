@@ -1,14 +1,12 @@
 import {render} from './render.js';
 
-import ProfileView from './view/profile-view.js';
-import FilterView from './view/filter-view.js';
-import SortView from './view/sort-view.js';
-
-import FilmsPresenter from './presenter/films-list-presenter.js';
-import PopupPresenter from './presenter/popup-presenter.js';
-
 import FilmsModel from './model/films-model.js';
-import DetailFilmPopupModel from './model/popup-model.js';
+import FilmsPresenter from './presenter/films-list-presenter.js';
+import FilterView from './view/filter-view.js';
+import PopupModel from './model/popup-model.js';
+import PopupPresenter from './presenter/popup-presenter.js';
+import ProfileView from './view/profile-view.js';
+import SortView from './view/sort-view.js';
 
 
 const haderElement = document.querySelector('.header');
@@ -19,7 +17,7 @@ const filmsPresenter = new FilmsPresenter();
 const filmsModel = new FilmsModel();
 
 const popupPresenter = new PopupPresenter;
-const popupModel = new DetailFilmPopupModel();
+const popupModel = new PopupModel();
 
 render(new ProfileView(), haderElement);
 render(new FilterView(), mainElement);

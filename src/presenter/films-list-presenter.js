@@ -1,15 +1,15 @@
 import {render} from '../render.js';
 
-import FilmsContainer from '../view/films-container-viev.js';
-import FilmslistView from '../view/films-list-view.js';
+import FilmsContainerView from '../view/films-container-view.js';
+import FilmsListView from '../view/films-list-view.js';
 import FilmslistContainerView from '../view/films-list-container-view.js';
 import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 
 
 export default class FilmsPresenter {
-  filmsComponent = new FilmsContainer();
-  filmsListComponent = new FilmslistView();
+  filmsComponent = new FilmsContainerView();
+  filmsListComponent = new FilmsListView();
   filmsListContainerComponent = new FilmslistContainerView();
 
   renderMainFilmsContainer = (filmsContainer, filmsModel) => {

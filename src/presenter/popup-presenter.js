@@ -1,9 +1,9 @@
 import {render} from '../render.js';
 
 import PopupWrapperView from '../view/popup-wrapper-view.js';
-import PopupInnerView from '../view/popup-inner-viev.js';
-import PopupFilmContainerView from '../view/popup-film-container-viev.js';
-import PopupCommentsContainerView from '../view/popup-comments-container-viev.js';
+import PopupInnerView from '../view/popup-inner-view.js';
+import PopupFilmContainerView from '../view/popup-film-container-view.js';
+import PopupCommentsContainerView from '../view/popup-comments-container-view.js';
 
 export default class PopupPresenter {
   PopupWrapperComponent = new PopupWrapperView;

@@ -6,7 +6,7 @@ const createFilmslistTemplate = () => (
     </section>`
 );
 
-export default class FilmslistView {
+export default class FilmsListView {
   getTemplate() {
     return createFilmslistTemplate();
   }

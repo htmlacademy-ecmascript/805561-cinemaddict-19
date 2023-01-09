@@ -1,6 +1,6 @@
 import {generateFilm, generateComment} from '../mock/film.js';
 
-export default class DetailFilmPopupModel {
+export default class PopupModel {
   #film = generateFilm();
   #comments = Array.from({length: 20}, generateComment);
 
