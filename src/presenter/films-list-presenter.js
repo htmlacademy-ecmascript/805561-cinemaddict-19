@@ -1,24 +1,35 @@
-import {render, RenderPosition} from '../render.js';
+import {render} from '../render.js';
 
+import FilmsContainerView from '../view/films-container-view.js';
+import FilmsListView from '../view/films-list-view.js';
+import FilmslistContainerView from '../view/films-list-container-view.js';
 import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 
 
-export default class FilmListPresenter {
-  ShowMoreButton = new ShowMoreButtonView();
+export default class FilmsPresenter {
+  filmsComponent = new FilmsContainerView();
+  filmsListComponent = new FilmsListView();
+  filmsListContainerComponent = new FilmslistContainerView();
 
-  renderFilmsList = (filmsContainer) => {
+  renderMainFilmsContainer = (filmsContainer, filmsModel) => {
     this.filmsContainer = filmsContainer;
+    this.filmsModel = filmsModel;
+    this.films = [...this.filmsModel.getFilms()];
 
-    for (let i = 0; i < 5; i++) {
-      render(new FilmCardView(),this.filmsContainer);
-    }
+    render(this.filmsComponent, this.filmsContainer);
+    render(this.filmsListComponent, this.filmsComponent.getElement());
+    render(this.filmsListContainerComponent, this.filmsListComponent.getElement());
 
-    render(this.ShowMoreButton, this.filmsContainer, RenderPosition.AFTEREND);
+    this.films.forEach((film) => {
+      render(new FilmCardView(film), this.filmsListContainerComponent.getElement());
+    });
+
+    render(new ShowMoreButtonView(), this.filmsListComponent.getElement());
   };
 
-  init = (filmsContainer) => {
-    this.renderFilmsList(filmsContainer);
+  init = (filmsContainer, filmsModel) => {
+    this.renderMainFilmsContainer(filmsContainer, filmsModel);
   };
 }
 
