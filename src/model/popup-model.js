@@ -4,11 +4,11 @@ export default class PopupModel {
   #film = generateFilm();
   #comments = Array.from({length: 20}, generateComment);
 
-  getDetailFilm() {
+  get detailFilm() {
     return this.#film;
   }
 
-  getComments() {
+  get comments() {
     return this.#comments;
   }
 }
