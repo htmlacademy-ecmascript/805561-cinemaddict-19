@@ -15,7 +15,7 @@ export default class PopupPresenter {
 
   #PopupWrapperComponent = new PopupWrapperView;
   #PopupInnerComponent = new PopupInnerView;
-  bodyElement = document.body;//криво как-то, этого здесь быть не должно, передавать откуда?
+  bodyElement = document.body;//все равно не могу понять)))
 
   constructor(popupContainer, commentModel) {
     this.#popupContainer = popupContainer;
