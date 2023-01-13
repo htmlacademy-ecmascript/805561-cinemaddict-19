@@ -6,6 +6,9 @@ import FilmslistContainerView from '../view/films-list-container-view.js';
 import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 
+import PopupModel from '../model/popup-model.js';
+import PopupPresenter from '../presenter/popup-presenter.js';
+
 
 export default class FilmsPresenter {
   #filmsContainer = null;
@@ -16,7 +19,11 @@ export default class FilmsPresenter {
   #filmsListComponent = new FilmsListView();
   #filmsListContainerComponent = new FilmslistContainerView();
 
-  renderMainFilmsContainer = (filmsContainer, filmsModel) => {
+  bodyElement = document.body;//криво как-то, этого здесь быть не должно, передавать откуда?
+  commentModel = new PopupModel();
+  popupPresenter = new PopupPresenter(this.bodyElement, this.commentModel);
+
+  #renderMainFilmsContainer = (filmsContainer, filmsModel) => {
     this.#filmsContainer = filmsContainer;
     this.#filmsModel = filmsModel;
     this.#films = [...this.#filmsModel.films];
@@ -26,23 +33,32 @@ export default class FilmsPresenter {
     render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
 
     this.#films.forEach((film) => {
-      //render(new FilmCardView(film), this.#filmsListContainerComponent.element);
       this.#renderFilmCard(film);
     });
 
     render(new ShowMoreButtonView(), this.#filmsListComponent.element);
   };
 
-  init = (filmsContainer, filmsModel) => {
-    this.renderMainFilmsContainer(filmsContainer, filmsModel);
-  };
-
   #renderFilmCard = (film) => {
-    const FilmCardComponent = new FilmCardView(film);
+    const filmCardComponent = new FilmCardView(film);
 
-    render(FilmCardComponent, this.#filmsListContainerComponent.element);
+    render(filmCardComponent, this.#filmsListContainerComponent.element);
+
+    const openPopup = () => {
+      this.popupPresenter.init(film);
+      this.bodyElement.classList.add('hide-overflow');
+    };
+
+    filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      openPopup();
+    });
+
   };
 
+  init = (filmsContainer, filmsModel) => {
+    this.#renderMainFilmsContainer(filmsContainer, filmsModel);
+  };
 
 }
 
