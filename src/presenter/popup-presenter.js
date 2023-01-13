@@ -6,23 +6,64 @@ import PopupFilmContainerView from '../view/popup-film-container-view.js';
 import PopupCommentsContainerView from '../view/popup-comments-container-view.js';
 
 export default class PopupPresenter {
-  PopupWrapperComponent = new PopupWrapperView;
-  PopupInnerComponent = new PopupInnerView;
+  #popupContainer = null;
+  #popupModel = null;
+  #film = null;
+  #comments = null;
+  #popupFilmContainer = null;
+  #popupCommentsContainer = null;
 
-  renderPopup = (popupContainer, popupModel) => {
-    this.popupContainer = popupContainer;
-    this.popupModel = popupModel;
-    this.film = this.popupModel.getDetailFilm();
-    this.comments = [...this.popupModel.getComments()];
+  #PopupWrapperComponent = new PopupWrapperView;
+  #PopupInnerComponent = new PopupInnerView;
+  bodyElement = document.body;//криво как-то, этого здесь быть не должно, передавать откуда?
 
-    render(this.PopupWrapperComponent, this.popupContainer);
-    render(this.PopupInnerComponent, this.PopupWrapperComponent.getElement());
+  constructor(popupContainer, commentModel) {
+    this.#popupContainer = popupContainer;
+    this.#popupModel = commentModel;
+  }
 
-    render(new PopupFilmContainerView(this.film), this.PopupInnerComponent.getElement());
-    render(new PopupCommentsContainerView(this.film, this.comments), this.PopupInnerComponent.getElement());
+  #renderPopup = (film) => {
+    this.#film = film;
+    this.#comments = [...this.#popupModel.comments];
+    this.#popupFilmContainer = new PopupFilmContainerView(this.#film);
+    this.#popupCommentsContainer = new PopupCommentsContainerView(this.#film, this.#comments);
+
+    document.addEventListener('keydown', escKeyDownHandler);
+
+    render(this.#PopupWrapperComponent, this.#popupContainer);
+    render(this.#PopupInnerComponent, this.#PopupWrapperComponent.element);
+
+    render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
+    render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
+
+    const closePopup = () => {
+      this.#PopupWrapperComponent.element.remove();
+      this.#PopupWrapperComponent.removeElement();
+      this.#PopupInnerComponent.element.remove();
+      this.#PopupInnerComponent.removeElement();
+      this.#popupFilmContainer.element.remove();
+      this.#popupFilmContainer.removeElement();
+      this.#popupCommentsContainer.element.remove();
+      this.#popupCommentsContainer.removeElement();
+
+      this.bodyElement.classList.remove('hide-overflow');
+      document.removeEventListener('keydown', escKeyDownHandler);
+    };
+
+    function escKeyDownHandler(evt) {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        closePopup();
+      }
+    }
+
+    this.#popupFilmContainer.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+      closePopup();
+    });
+
   };
 
-  init = (popupContainer, popupModel) => {
-    this.renderPopup(popupContainer, popupModel);
+  init = (film) => {
+    this.#renderPopup(film);
   };
 }

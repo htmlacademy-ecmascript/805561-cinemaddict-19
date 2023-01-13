@@ -5,19 +5,21 @@ const createPopupInnerTemplate = () => (
 );
 
 export default class PopupInnerView {
-  getTemplate() {
+  #element = null;
+
+  get template() {
     return createPopupInnerTemplate();
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
