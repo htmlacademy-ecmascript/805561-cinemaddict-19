@@ -64,8 +64,6 @@ export default class PopupPresenter {
       }
     }
 
-
-
   };
 
   init = (film) => {
