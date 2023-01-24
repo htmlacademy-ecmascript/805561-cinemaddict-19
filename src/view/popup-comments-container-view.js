@@ -1,5 +1,5 @@
-import {createElement} from '../render.js';
 import {humanizeDate} from '../utils.js';
+import AbstractView from '../framework/view/abstract-view';
 
 const createPopupCommentsContainerTemplate = (film, commentsData) => {
   const {
@@ -81,12 +81,13 @@ const createPopupCommentsContainerTemplate = (film, commentsData) => {
   );
 };
 
-export default class PopupCommentsContainerView {
-  #element = null;
+export default class PopupCommentsContainerView extends AbstractView {
+
   #film = null;
   #comments = null;
 
   constructor(film, comments) {
+    super();
     this.#film = film;
     this.#comments = comments;
   }
@@ -95,15 +96,4 @@ export default class PopupCommentsContainerView {
     return createPopupCommentsContainerTemplate(this.#film, this.#comments);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
 }

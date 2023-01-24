@@ -1,5 +1,5 @@
-import {createElement} from '../render.js';
 import {humanizeDate} from '../utils.js';
+import AbstractView from '../framework/view/abstract-view';
 
 const createPopupFilmContainerTemplate = (film) => {
 
@@ -106,27 +106,26 @@ const createPopupFilmContainerTemplate = (film) => {
   );
 };
 
-export default class PopupFilmsContainerView {
-  #element = null;
-  #film = null;
+export default class PopupFilmsContainerView extends AbstractView {
 
-  constructor(film) {
+  #film = null;
+  #handlePopupClose = null;
+
+  constructor({film, onClick}) {
+    super();
     this.#film = film;
+    this.#handlePopupClose = onClick;
+
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#popupCloseHandler);
   }
 
   get template() {
     return createPopupFilmContainerTemplate(this.#film);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  #popupCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handlePopupClose();
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
 }

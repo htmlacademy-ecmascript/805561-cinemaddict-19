@@ -25,16 +25,6 @@ export default class PopupPresenter {
   #renderPopup = (film) => {
     this.#film = film;
     this.#comments = [...this.#popupModel.comments];
-    this.#popupFilmContainer = new PopupFilmContainerView(this.#film);
-    this.#popupCommentsContainer = new PopupCommentsContainerView(this.#film, this.#comments);
-
-    document.addEventListener('keydown', escKeyDownHandler);
-
-    render(this.#PopupWrapperComponent, this.#popupContainer);
-    render(this.#PopupInnerComponent, this.#PopupWrapperComponent.element);
-
-    render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
-    render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
 
     const closePopup = () => {
       this.#PopupWrapperComponent.element.remove();
@@ -50,16 +40,29 @@ export default class PopupPresenter {
       document.removeEventListener('keydown', escKeyDownHandler);
     };
 
+    this.#popupFilmContainer = new PopupFilmContainerView({
+      film,
+      onClick: () => {
+        closePopup();
+      }
+    });
+
+    this.#popupCommentsContainer = new PopupCommentsContainerView(this.#film, this.#comments);
+
+    document.addEventListener('keydown', escKeyDownHandler);
+
+    render(this.#PopupWrapperComponent, this.#popupContainer);
+    render(this.#PopupInnerComponent, this.#PopupWrapperComponent.element);
+
+    render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
+    render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
+
     function escKeyDownHandler(evt) {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
         closePopup();
       }
     }
-
-    this.#popupFilmContainer.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
-      closePopup();
-    });
 
   };
 

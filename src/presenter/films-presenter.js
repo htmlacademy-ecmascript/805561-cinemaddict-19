@@ -47,15 +47,14 @@ export default class FilmsPresenter {
     }
 
     if (this.#films.length > FILM_COUNT_PER_STEP) {
-      this.#showMoreButtonComponent = new ShowMoreButtonView();
+      this.#showMoreButtonComponent = new ShowMoreButtonView({
+        onClick: this.#showMoreButtonClickHandler
+      });
       render(this.#showMoreButtonComponent, this.#filmsListComponent.element);
-
-      this.#showMoreButtonComponent.element.addEventListener('click', this.#showMoreButtonClickHandler);
     }
   };
 
-  #showMoreButtonClickHandler = (evt) => {
-    evt.preventDefault();
+  #showMoreButtonClickHandler = () => {
     this.#films
       .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => this.#renderFilmCard(film));
@@ -69,19 +68,23 @@ export default class FilmsPresenter {
   };
 
   #renderFilmCard = (film) => {
-    const filmCardComponent = new FilmCardView(film);
 
-    render(filmCardComponent, this.#filmsListContainerComponent.element);
+    const filmCardComponent = new FilmCardView({
+      film,
+      onClick: () => {
+        openPopup.call(this);
+        //мне не понятно, зачем было openPopup делать декларативной
+        // и прибивать здесь гвоздями контекст с помощью .call ( у нас так в демопроекте https://github.com/htmlacademy-ecmascript/taskmanager-19/pull/4/commits/e8eef3cb2fc191c738294392e72d55abd9aadc25),
+        //если  можно использовать стрелку, как  я это сделала в PopupPresenter например?
+      }
+    });
 
-    const openPopup = () => {
+    function openPopup () {
       this.#popupPresenter.init(film);
       this.bodyElement.classList.add('hide-overflow');
-    };
+    }
 
-    filmCardComponent.element.querySelector('.film-card__link').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      openPopup();
-    });
+    render(filmCardComponent, this.#filmsListContainerComponent.element);
 
   };
 
