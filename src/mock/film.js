@@ -94,8 +94,8 @@ export const generateFilm = () => ({
   },
   userDetails: {
     watchlist: getBoolean(),
-    alreadyWatched: getBoolean,
+    alreadyWatched: getBoolean(),
     watchingDate: '2019-04-12T16:12:32.554Z',
-    favorite: getBoolean
+    favorite: getBoolean(),
   }
 });
