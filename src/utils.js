@@ -28,7 +28,7 @@ function getArrayRandomElement (array) {
 
 //получение случайного true/false
 function getBoolean () {
-  return getRandomInteger(0, 1);
+  return Boolean(getRandomInteger(0, 1));
 }
 
 //получение нескольких случайных элеменов массива

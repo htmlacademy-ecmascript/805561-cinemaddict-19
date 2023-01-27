@@ -15,7 +15,7 @@ export default class PopupPresenter {
 
   #PopupWrapperComponent = new PopupWrapperView;
   #PopupInnerComponent = new PopupInnerView;
-  bodyElement = document.body;//все равно не могу понять)))
+  bodyElement = document.body;
 
   constructor(popupContainer, commentModel) {
     this.#popupContainer = popupContainer;
