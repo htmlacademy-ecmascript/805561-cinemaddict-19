@@ -69,7 +69,7 @@ export default class FilmCardView extends AbstractView {
 
   #popupOpenHandler = (evt) => {
     evt.preventDefault();
-    this.#handlePopupOpen();
+    this.#handlePopupOpen(this.#filmCard);
   };
 
 }
