@@ -62,18 +62,8 @@ export const generateComment = () => ({
 });
 
 
-// фунция для создания массива комментариев
-/*const commentsArray = [];
-export const createComments = (elementsCount) => {
-  for (let i = 0; i < elementsCount; i++) {
-    commentsArray[i] = generateComment(i);
-  }
-
-  return commentsArray;
-};*/
-
 export const generateFilm = () => ({
-  id: getRandomInteger(0, 30),
+  id: getRandomInteger(0, 30000000),
   comments: [ 1, 5, 7, 10, 15, 19],
   filmInfo: {
     title: `Title ${ getRandomInteger(0, 30)}`,

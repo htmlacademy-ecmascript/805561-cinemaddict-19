@@ -1,4 +1,4 @@
-import {render} from '../framework/render';
+import {render, remove, replace} from '../framework/render';
 import PopupPresenter from './popup-presenter';
 import FilmCardView from '../view/film-card-view';
 import CommentModel from '../model/comment-model';
@@ -9,9 +9,12 @@ export default class FilmCardPresenter {
   #commentModel = new CommentModel();
   #popupPresenter = new PopupPresenter(bodyElement, this.#commentModel);
   #filmsListContainer = null;
+  #filmComponent = null;
+  #handleDataChange = null;
 
-  constructor({filmsListContainer}) {
+  constructor({filmsListContainer, onDataChange}) {
     this.#filmsListContainer = filmsListContainer;
+    this.#handleDataChange = onDataChange;
   }
 
   #openPopup = (film) => {
@@ -19,17 +22,52 @@ export default class FilmCardPresenter {
     bodyElement.classList.add('hide-overflow');
   };
 
-  #renderFilmCard = (film) => {
-    const filmCardComponent = new FilmCardView({
+  init = (film) => {
+    const prevFilmComponent = this.#filmComponent;
+
+    this.#filmComponent = new FilmCardView({
       film,
       onClick: this.#openPopup,
+      onFavoriteClick: this.#handleFavoriteClick,
+      onWatchlistClick: this.#handleWatchlistClick,
+      onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
     });
 
-    render(filmCardComponent, this.#filmsListContainer);
+    if (prevFilmComponent === null) {
+      render(this.#filmComponent, this.#filmsListContainer);
+      return;
+    }
+
+    if (this.#filmsListContainer.contains(prevFilmComponent.element)) {
+      replace(this.#filmComponent, prevFilmComponent);
+    }
+
+    remove(prevFilmComponent);
   };
 
-  init = (film) => {
-    this.#renderFilmCard(film);
+  #handleFavoriteClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleDataChange({...newFilm, userDetails: {...userDetails, favorite: !film.userDetails.favorite } });
   };
+
+  #handleWatchlistClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleDataChange({...newFilm, userDetails: {...userDetails, watchlist: !film.userDetails.watchlist } });
+  };
+
+  #handleAlreadyWatchedClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleDataChange({...newFilm, userDetails: {...userDetails, alreadyWatched: !film.userDetails.alreadyWatched } });
+  };
+
+  destroy() {
+    remove(this.#filmComponent);
+  }
 
 }

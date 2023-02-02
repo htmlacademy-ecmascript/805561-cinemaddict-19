@@ -39,4 +39,8 @@ function getArrayRandomElements (array) {
 
 const humanizeDate = (date, templete) => dayjs(date).format(templete);
 
-export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement, getRandomFractionalNumber};
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
+export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement, getRandomFractionalNumber, updateItem};
