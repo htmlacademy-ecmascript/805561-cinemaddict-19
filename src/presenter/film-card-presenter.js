@@ -5,22 +5,34 @@ import CommentModel from '../model/comment-model';
 
 const bodyElement = document.body;
 
+
 export default class FilmCardPresenter {
   #commentModel = new CommentModel();
   #popupPresenter = new PopupPresenter(bodyElement, this.#commentModel);
   #filmsListContainer = null;
   #filmComponent = null;
   #handleDataChange = null;
+  #handlePopupChange = null;
 
-  constructor({filmsListContainer, onDataChange}) {
+  constructor({filmsListContainer, onDataChange, onPopupChange}) {
     this.#filmsListContainer = filmsListContainer;
     this.#handleDataChange = onDataChange;
+    this.#handlePopupChange = onPopupChange;
   }
 
   #openPopup = (film) => {
+    this.#popupChangeHendler();
+
     this.#popupPresenter.init(film);
     bodyElement.classList.add('hide-overflow');
+
   };
+
+  removePopup() {
+    //if (запилить исключение для уже открытого попапа) {
+    this.#popupPresenter.closePopup();
+    //}
+  }
 
   init = (film) => {
     const prevFilmComponent = this.#filmComponent;
@@ -64,6 +76,10 @@ export default class FilmCardPresenter {
     const {userDetails} = film;
 
     this.#handleDataChange({...newFilm, userDetails: {...userDetails, alreadyWatched: !film.userDetails.alreadyWatched } });
+  };
+
+  #popupChangeHendler = () => {
+    this.#handlePopupChange();
   };
 
   destroy() {

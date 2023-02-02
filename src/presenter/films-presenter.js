@@ -28,7 +28,6 @@ export default class FilmsPresenter {
   #noFilmComponent = new NoFilmView();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #showMoreButtonComponent = null;
-  //#filmCardPresenter = null;
   #filmCardPresenterList = new Map();
   #filmsCount = null;
   #favoriteCount = null;
@@ -90,6 +89,10 @@ export default class FilmsPresenter {
     }
   };
 
+  #handlePopupChange = () => {
+    this.#filmCardPresenterList.forEach((presenter) => presenter.removePopup());
+  };
+
   #handleFilmChange = (updatedFilm) => {
     this.#films = updateItem(this.#films, updatedFilm);
     this.#filmCardPresenterList.get(updatedFilm.id).init(updatedFilm);
@@ -99,6 +102,7 @@ export default class FilmsPresenter {
     const filmCardPresenter = new FilmCardPresenter({
       filmsListContainer: this.#filmsListContainerComponent.element,
       onDataChange: this.#handleFilmChange,
+      onPopupChange: this.#handlePopupChange,
     });
 
     filmCardPresenter.init(film);
