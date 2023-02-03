@@ -2,17 +2,24 @@ import AbstractView from '../framework/view/abstract-view';
 
 const createProfiletTemplate = (favoriteCount) => {
   const favoriteCountValue = favoriteCount;
+  const Rating = {
+    NOVICE_VALUE_MIN: 0,
+    NOVICE_VALUE_MAX: 10,
+    FAN_VALUE_MIN: 11,
+    FAN_VALUE_MAX: 20,
+    MOVIE_BUFF_VALUE_MIN: 21,
+  };
   let profileRating;
 
   //стоит ли здесь использовать switch, или лучше не выпендриваться и через if?
   switch(true) {
-    case favoriteCountValue > 0 && favoriteCountValue <= 10:
+    case favoriteCountValue > Rating.NOVICE_VALUE_MIN && favoriteCountValue <= Rating.NOVICE_VALUE_MAX:
       profileRating = 'Novice';
       break;
-    case favoriteCountValue >= 11 && favoriteCountValue <= 20:
+    case favoriteCountValue >= Rating.FAN_VALUE_MIN && favoriteCountValue <= Rating.FAN_VALUE_MAX:
       profileRating = 'Fan';
       break;
-    case favoriteCountValue >= 21:
+    case favoriteCountValue >= Rating.MOVIE_BUFF_VALUE_MIN:
       profileRating = 'Movie Buff';
       break;
     default:

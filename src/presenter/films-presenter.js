@@ -1,21 +1,24 @@
-import {render} from '../render.js';
-
+import {render, remove} from '../framework/render.js';
+import {updateItem} from '../utils.js';
 import FilmsContainerView from '../view/films-container-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmslistContainerView from '../view/films-list-container-view.js';
-import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
-import CommentModel from '../model/comment-model.js';
-import PopupPresenter from '../presenter/popup-presenter.js';
 import NoFilmView from '../view/no-film-view';
+import ProfileView from '../view/profile-view';
+import FilterView from '../view/filter-view';
+import SortView from '../view/sort-view';
+import FooterStatisticsView from '../view/footer-statistics-view';
+import FilmCardPresenter from './film-card-presenter';
 
 
 const FILM_COUNT_PER_STEP = 5;
+const headerElement = document.querySelector('.header');
+const mainElement = document.querySelector('.main');
+const footerElement = document.querySelector('.footer');
 
 export default class FilmsPresenter {
-  bodyElement = document.body;//все равно не могу понять)))
 
-  #commentModel = new CommentModel();
   #filmsContainer = null;
   #filmsModel = null;
   #films = null;
@@ -23,25 +26,46 @@ export default class FilmsPresenter {
   #filmsListComponent = new FilmsListView();
   #filmsListContainerComponent = new FilmslistContainerView();
   #noFilmComponent = new NoFilmView();
-  #popupPresenter = new PopupPresenter(this.bodyElement, this.#commentModel);
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #showMoreButtonComponent = null;
+  #filmCardPresenterList = new Map();
+  #filmsCount = null;
+  #favoriteCount = null;
+  #filterCounts = null;
 
+
+  #renderFilmsList(from, to) {
+    this.#films
+      .slice(from, to)
+      .forEach((film) => this.#renderFilmCard(film, this. #filmsListContainerComponent));
+  }
+
+  #clearFilmsList() {
+    this.#filmCardPresenterList.forEach((presenter) => presenter.destroy());
+    this.#filmCardPresenterList.clear();
+    this.#renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this.#showMoreButtonComponent);
+  }
 
   #renderMainFilmsContainer = (filmsContainer, filmsModel) => {
     this.#filmsContainer = filmsContainer;
     this.#filmsModel = filmsModel;
     this.#films = [...this.#filmsModel.films];
+    this.#filmsCount = this.#filmsModel.films.length;
+    this.#favoriteCount = this.#filmsModel.favoriteCount;
+    this.#filterCounts = this.#filmsModel.filterCounts;
 
-    render(this.#filmsComponent, this.#filmsContainer);
+    render(new ProfileView(this.#favoriteCount), headerElement);
+    render(new FilterView(this.#filterCounts), mainElement);
+    render(new FooterStatisticsView(this.#filmsCount), footerElement);
 
     if(this.#films.length > 0){
+      render(new SortView(), mainElement);
+      render(this.#filmsComponent, this.#filmsContainer);
       render(this.#filmsListComponent, this.#filmsComponent.element);
       render(this.#filmsListContainerComponent, this.#filmsListComponent.element);
 
-      this.#films.slice(0, FILM_COUNT_PER_STEP).forEach((film) => {
-        this.#renderFilmCard(film);
-      });
+      this.#renderFilmsList(0, FILM_COUNT_PER_STEP);
     }else{
       render(this.#noFilmComponent, this.#filmsComponent.element);
     }
@@ -55,9 +79,7 @@ export default class FilmsPresenter {
   };
 
   #showMoreButtonClickHandler = () => {
-    this.#films
-      .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => this.#renderFilmCard(film));
+    this.#renderFilmsList(this.#renderedFilmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP);
 
     this.#renderedFilmCount += FILM_COUNT_PER_STEP;
 
@@ -67,25 +89,24 @@ export default class FilmsPresenter {
     }
   };
 
-  #renderFilmCard = (film) => {
+  #handlePopupChange = () => {
+    this.#filmCardPresenterList.forEach((presenter) => presenter.removePopup());
+  };
 
-    const filmCardComponent = new FilmCardView({
-      film,
-      onClick: () => {
-        openPopup.call(this);
-        //мне не понятно, зачем было openPopup делать декларативной
-        // и прибивать здесь гвоздями контекст с помощью .call ( у нас так в демопроекте https://github.com/htmlacademy-ecmascript/taskmanager-19/pull/4/commits/e8eef3cb2fc191c738294392e72d55abd9aadc25),
-        //если  можно использовать стрелку, как  я это сделала в PopupPresenter например?
-      }
+  #handleFilmChange = (updatedFilm) => {
+    this.#films = updateItem(this.#films, updatedFilm);
+    this.#filmCardPresenterList.get(updatedFilm.id).init(updatedFilm);
+  };
+
+  #renderFilmCard = (film) => {
+    const filmCardPresenter = new FilmCardPresenter({
+      filmsListContainer: this.#filmsListContainerComponent.element,
+      onDataChange: this.#handleFilmChange,
+      onPopupChange: this.#handlePopupChange,
     });
 
-    function openPopup () {
-      this.#popupPresenter.init(film);
-      this.bodyElement.classList.add('hide-overflow');
-    }
-
-    render(filmCardComponent, this.#filmsListContainerComponent.element);
-
+    filmCardPresenter.init(film);
+    this.#filmCardPresenterList.set(film.id, filmCardPresenter);
   };
 
   init = (filmsContainer, filmsModel) => {
