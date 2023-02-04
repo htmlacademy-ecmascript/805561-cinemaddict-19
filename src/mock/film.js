@@ -75,7 +75,7 @@ export const generateFilm = () => ({
     writers: [ 'Takeshi Kitano', 'Kitano Takeshi' ],
     actors: [ 'Morgan Freeman' ],
     release: {
-      date: '2019-05-11T00:00:00.000Z',
+      date: `20${getRandomInteger(10, 99)}-04-12T16:12:32.554Z`,
       releaseCountry: 'Finland'
     },
     runtime: '5h 55m',
@@ -85,7 +85,7 @@ export const generateFilm = () => ({
   userDetails: {
     watchlist: getBoolean(),
     alreadyWatched: getBoolean(),
-    watchingDate: '2019-04-12T16:12:32.554Z',
+    watchingDate: '2019-05-11T00:00:00.000Z',
     favorite: getBoolean(),
   }
 });
