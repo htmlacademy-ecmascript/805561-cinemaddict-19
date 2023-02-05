@@ -1,7 +1,11 @@
 import {humanizeDate} from '../utils.js';
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
-const createPopupCommentsContainerTemplate = (film, commentsData) => {
+
+let commentEmoji = null;
+
+const createPopupCommentsContainerTemplate = ({film, commentsData, emoji}) => {
+
   const {
     comments,
   } = film;
@@ -35,6 +39,8 @@ const createPopupCommentsContainerTemplate = (film, commentsData) => {
   };
   const commentsList = renderCommentList();
 
+  commentEmoji = emoji;
+
   return (
     `
     <div class="film-details__bottom-container">
@@ -46,15 +52,16 @@ const createPopupCommentsContainerTemplate = (film, commentsData) => {
       </ul>
 
       <form class="film-details__new-comment"  action="" method="get">
-        <div class="film-details__add-emoji-label"></div>
+        <div class="film-details__add-emoji-label">
+             ${commentEmoji ? `<img src="images/emoji/${commentEmoji}.png" width="55" height="55" alt="emoji-smile">` : ''}
+        </div>
 
         <label class="film-details__comment-label">
           <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
         </label>
 
         <div class="film-details__emoji-list">
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile"
-                 value="smile">
+          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
           <label class="film-details__emoji-label" for="emoji-smile">
             <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
           </label>
@@ -81,19 +88,68 @@ const createPopupCommentsContainerTemplate = (film, commentsData) => {
   );
 };
 
-export default class PopupCommentsContainerView extends AbstractView {
+export default class PopupCommentsContainerView extends AbstractStatefulView {
 
-  #film = null;
-  #comments = null;
+  //#film = null;
+  //#comments = null;
 
-  constructor(film, comments) {
+  constructor(commentContainerData) {
     super();
-    this.#film = film;
-    this.#comments = comments;
+    //const {film, comments} = commentContainerData;
+    //this.#film = film;
+    //this.#comments = comments;
+    this._setState(PopupCommentsContainerView.parseCommentToState(commentContainerData));
+
+    this._restoreHandlers();
   }
 
   get template() {
-    return createPopupCommentsContainerTemplate(this.#film, this.#comments);
+    //return createPopupCommentsContainerTemplate(this.#film, this.#comments, );
+    return createPopupCommentsContainerTemplate(this._state );
+  }
+
+  _restoreHandlers() {
+    this.element.querySelectorAll('.film-details__emoji-item')
+      .forEach((item) =>{
+        item.addEventListener('click', this.#emojiItemClickHandler);
+        if(commentEmoji === item.value){
+          item.setAttribute('checked', true);
+        }
+      });
+
+    //функция отправки комментария по Ctrl/Command + Enter
+  }
+
+  #commentSendHandler = () => {
+    //что-то тут при отправке коммента, типа
+    //PopupCommentsContainerView.parseStateToComment(this._state);
+  };
+
+  #emojiItemClickHandler = (evt) => {
+    commentEmoji = evt.target.value;
+
+    this.updateElement({
+      emoji: commentEmoji,
+    });
+
+  };
+
+  static parseCommentToState(commentContainerData) {
+    return {...commentContainerData,
+      emoji: commentEmoji,
+    };
+  }
+
+  static parseStateToComment(state) {
+    const commentContainerData = {...state };
+
+    if (!commentContainerData.emoji) {
+      commentContainerData.emoji = null;
+    }
+
+    delete commentContainerData.emoji;
+
+    return commentContainerData;
   }
 
 }
