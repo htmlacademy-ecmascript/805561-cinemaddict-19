@@ -22,15 +22,6 @@ export default class PopupPresenter {
   }
 
   closePopup = () => {
-    /*this.#PopupWrapperComponent.element.remove();
-    this.#PopupWrapperComponent.removeElement();
-    this.#PopupInnerComponent.element.remove();
-    this.#PopupInnerComponent.removeElement();
-    this.#popupFilmContainer.element.remove();
-    this.#popupFilmContainer.removeElement();
-    this.#popupCommentsContainer.element.remove();
-    this.#popupCommentsContainer.removeElement();*/
-
     this.destroy();
 
     this.bodyElement.classList.remove('hide-overflow');
@@ -53,7 +44,13 @@ export default class PopupPresenter {
       onClick: this.closePopup
     });
 
-    this.#popupCommentsContainer = new PopupCommentsContainerView(this.#film, this.#comments);
+    const commentContainerData = {
+      film: this.#film,
+      commentsData: this.#comments,
+    };
+
+    //this.#popupCommentsContainer = new PopupCommentsContainerView(this.#film, this.#comments);
+    this.#popupCommentsContainer = new PopupCommentsContainerView(commentContainerData);
 
     document.addEventListener('keydown',this.#escKeyDownHandler);
 
