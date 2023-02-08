@@ -11,7 +11,6 @@ const createProfiletTemplate = (favoriteCount) => {
   };
   let profileRating;
 
-  //стоит ли здесь использовать switch, или лучше не выпендриваться и через if?
   switch(true) {
     case favoriteCountValue > Rating.NOVICE_VALUE_MIN && favoriteCountValue <= Rating.NOVICE_VALUE_MAX:
       profileRating = 'Novice';
@@ -33,14 +32,14 @@ const createProfiletTemplate = (favoriteCount) => {
 };
 
 export default class ProfileView extends AbstractView {
-  #favoriteCount = null;
+  #watchedCount = null;
 
-  constructor(favoriteCount) {
+  constructor(watchedCount) {
     super();
-    this.#favoriteCount = favoriteCount;
+    this.#watchedCount = watchedCount;
   }
 
   get template() {
-    return createProfiletTemplate(this.#favoriteCount);
+    return createProfiletTemplate(this.#watchedCount);
   }
 }

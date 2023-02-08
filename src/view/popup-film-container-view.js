@@ -19,13 +19,30 @@ const createPopupFilmContainerTemplate = (film) => {
       },
       runtime,
       genre,
-      description
+      description,
     },
+    userDetails: {
+      watchlist,
+      alreadyWatched,
+      favorite,
+    }
   } = film;
 
   const template = 'DD MMM YYYY';
   const humanizedDate = date !== null
     ? humanizeDate(date, template)
+    : '';
+
+  const FavoriteClassName = favorite
+    ? 'film-details__control-button--active'
+    : '';
+
+  const WatchlistClassName = watchlist
+    ? 'film-details__control-button--active'
+    : '';
+
+  const AlreadyWatchedClassName = alreadyWatched
+    ? 'film-details__control-button--active'
     : '';
 
   return ( `
@@ -92,13 +109,13 @@ const createPopupFilmContainerTemplate = (film) => {
 
       <section class="film-details__controls">
         <button type="button"
-                class="film-details__control-button film-details__control-button--active film-details__control-button--watchlist"
+                class="film-details__control-button  film-details__control-button--watchlist ${WatchlistClassName}"
                 id="watchlist" name="watchlist">Add to watchlist
         </button>
-        <button type="button" class="film-details__control-button film-details__control-button--watched" id="watched"
+        <button type="button" class="film-details__control-button film-details__control-button--watched ${AlreadyWatchedClassName}" id="watched"
                 name="watched">Already watched
         </button>
-        <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite"
+        <button type="button" class="film-details__control-button film-details__control-button--favorite ${FavoriteClassName}" id="favorite"
                 name="favorite">Add to favorites
         </button>
       </section>
@@ -110,6 +127,7 @@ export default class PopupFilmsContainerView extends AbstractView {
 
   #film = null;
   #handlePopupClose = null;
+
 
   constructor({film, onClick}) {
     super();

@@ -39,9 +39,9 @@ function getArrayRandomElements (array) {
 
 const humanizeDate = (date, templete) => dayjs(date).format(templete);
 
-function updateItem(items, update) {
+/*function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
-}
+}*/
 
 
 function getWeightForNullDate(dateA, dateB) {
@@ -71,4 +71,4 @@ function sortRatingDown(filmA, filmB) {
 }
 
 
-export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement, getRandomFractionalNumber, updateItem, sortDateDown, sortRatingDown};
+export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement, getRandomFractionalNumber, sortDateDown, sortRatingDown};

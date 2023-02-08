@@ -3,10 +3,12 @@ import PopupInnerView from '../view/popup-inner-view.js';
 import PopupFilmContainerView from '../view/popup-film-container-view.js';
 import PopupCommentsContainerView from '../view/popup-comments-container-view.js';
 import {render, remove} from '../framework/render';
+import {UpdateType, UserAction} from '../const';
 
 export default class PopupPresenter {
   #popupContainer = null;
-  #popupModel = null;
+  #commentModel = null;
+  #handleDataChange = null;
   #film = null;
   #comments = null;
   #popupFilmContainer = null;
@@ -16,9 +18,10 @@ export default class PopupPresenter {
   #PopupInnerComponent = new PopupInnerView;
   bodyElement = document.body;
 
-  constructor(popupContainer, commentModel) {
+  constructor({popupContainer, commentModel, onDataChange}) {
     this.#popupContainer = popupContainer;
-    this.#popupModel = commentModel;
+    this.#commentModel = commentModel;
+    this.#handleDataChange = onDataChange;
   }
 
   closePopup = () => {
@@ -37,11 +40,11 @@ export default class PopupPresenter {
 
   #renderPopup = (film) => {
     this.#film = film;
-    this.#comments = [...this.#popupModel.comments];
+    this.#comments = [...this.#commentModel.comments];
 
     this.#popupFilmContainer = new PopupFilmContainerView({
       film,
-      onClick: this.closePopup
+      onClick: this.closePopup,
     });
 
     const commentContainerData = {
@@ -49,17 +52,35 @@ export default class PopupPresenter {
       commentsData: this.#comments,
     };
 
-    //this.#popupCommentsContainer = new PopupCommentsContainerView(this.#film, this.#comments);
-    this.#popupCommentsContainer = new PopupCommentsContainerView(commentContainerData);
+    this.#popupCommentsContainer = new PopupCommentsContainerView({
+      commentContainerData,
+      onFormSubmit: this.#handleFormSubmit,
+      onDeleteClick: this.#handleDeleteClick,
+    });
 
     document.addEventListener('keydown',this.#escKeyDownHandler);
 
     render(this.#PopupWrapperComponent, this.#popupContainer);
     render(this.#PopupInnerComponent, this.#PopupWrapperComponent.element);
-
     render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
     render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
 
+  };
+
+  #handleFormSubmit = (update) => {
+    this.#handleDataChange(
+      UserAction.ADD_COMMENT,
+      UpdateType.MAJOR,
+      update,
+    );
+  };
+
+  #handleDeleteClick = (comment) => {
+    this.#handleDataChange(
+      UserAction.DELETE_COMMENT,
+      UpdateType.MINOR,
+      comment,
+    );
   };
 
   init = (film) => {
