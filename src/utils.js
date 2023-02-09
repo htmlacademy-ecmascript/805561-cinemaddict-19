@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {FilterType} from "./const";
 
 // Результат: целое число из диапазона "от...до"
 function getRandomInteger(min, max) {
@@ -70,5 +71,12 @@ function sortRatingDown(filmA, filmB) {
   return Number(filmB.filmInfo.totalRating) - Number(filmA.filmInfo.totalRating);
 }
 
+const filter = {
+  [FilterType.ALL]: ((films) => films),
+  [FilterType.WATCHLIST]: (films) => films.filter((film) => film.userDetails.watchlist),
+  [FilterType.HISTORY]: (films) => films.filter((film) => film.userDetails.alreadyWatched),
+  [FilterType.FAVORITES]: (films) => films.filter((film) => film.userDetails.favorite),
+};
 
-export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement, getRandomFractionalNumber, sortDateDown, sortRatingDown};
+
+export {getRandomInteger, getBoolean, humanizeDate, getArrayRandomElements, getArrayRandomElement, getRandomFractionalNumber, sortDateDown, sortRatingDown, filter};

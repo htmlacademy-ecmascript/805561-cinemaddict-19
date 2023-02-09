@@ -4,6 +4,13 @@ const SortType = {
   RATING_DOWN: 'rating-down',
 };
 
+const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
+};
+
 const UserAction = {
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
@@ -18,4 +25,4 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export {SortType, UserAction, UpdateType};
+export {SortType, FilterType, UserAction, UpdateType};
