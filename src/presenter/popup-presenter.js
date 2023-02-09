@@ -22,6 +22,8 @@ export default class PopupPresenter {
     this.#popupContainer = popupContainer;
     this.#commentModel = commentModel;
     this.#handleDataChange = onDataChange;
+
+
   }
 
   closePopup = () => {

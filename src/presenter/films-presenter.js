@@ -1,17 +1,15 @@
 import {render, remove} from '../framework/render.js';
 import {filter, sortDateDown, sortRatingDown} from '../utils.js';
-import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
 import FilmsContainerView from '../view/films-container-view.js';
 import FilmsListView from '../view/films-list-view.js';
 import FilmslistContainerView from '../view/films-list-container-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import NoFilmView from '../view/no-film-view';
 import ProfileView from '../view/profile-view';
-import FilterView from '../view/filter-view';
 import SortView from '../view/sort-view';
 import FooterStatisticsView from '../view/footer-statistics-view';
 import FilmCardPresenter from './film-card-presenter';
-import FilterModel from '../model/filter-model';
 import FilterPresenter from './filter-presenter';
 
 
@@ -54,18 +52,12 @@ export default class FilmsPresenter {
     const films = this.#filmsModel.films;
     const filteredFilms = filter[filterType](films);
 
-    console.log(films);
-
     switch (this.#currentSortType) {
       case SortType.DATE_DOWN:
-        //return [...this.#filmsModel.films].sort(sortDateDown);
         return filteredFilms.sort(sortDateDown);
       case SortType.RATING_DOWN:
-        //return [...this.#filmsModel.films].sort(sortRatingDown);
         return filteredFilms.sort(sortRatingDown);
     }
-    //return this.#filmsModel.films;
-    console.log(filteredFilms);
     return filteredFilms;
   }
 
@@ -167,7 +159,7 @@ export default class FilmsPresenter {
     }
     this.#currentSortType = sortType;
 
-    this.#clearFilmsList({resetRenderedFilmCount: true});
+    this.#clearFilmsList({resetRenderedFilmCount: true, resetSortType: false});
     this.#renderFilmsList();
   };
 

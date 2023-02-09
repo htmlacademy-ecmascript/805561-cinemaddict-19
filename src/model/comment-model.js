@@ -34,9 +34,6 @@ export default class CommentModel extends Observable {
   }
 
   deleteComment(updateType, update) {
-    console.log(update);
-    console.log(this.#comments);
-    //const index = this.#comments.findIndex((comment) => comment.id === update.id);
     const index = this.#comments.findIndex((comment) => Number(comment.id) === Number(update));
 
     if (index === -1) {
@@ -47,7 +44,6 @@ export default class CommentModel extends Observable {
       ...this.#comments.slice(0, index),
       ...this.#comments.slice(index + 1),
     ];
-    console.log(this.#comments);
 
     this._notify(updateType);
   }

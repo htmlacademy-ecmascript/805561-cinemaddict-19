@@ -2,9 +2,8 @@ import AbstractView from '../framework/view/abstract-view';
 import {FilterType} from '../const';
 
 const createFilterTemplate = (filterCounts, currentFilter) => {
-
   const {watchlist, alreadyWatched, favorite} = filterCounts;
-  console.log(currentFilter);
+
   return `<nav class="main-navigation">
     <a href="#all" class="main-navigation__item ${FilterType.ALL === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.ALL}>All movies</a>
     <a href="#watchlist" class="main-navigation__item ${FilterType.WATCHLIST === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.WATCHLIST} >Watchlist <span class="main-navigation__item-count">${watchlist}</span></a>
@@ -38,8 +37,6 @@ export default class FilterView extends AbstractView {
     }
     evt.preventDefault();
     this.#handleFilterTypeChange(evt.target.dataset.filterType);
-
-    console.log(evt.target.dataset.filterType);
   };
 
 }

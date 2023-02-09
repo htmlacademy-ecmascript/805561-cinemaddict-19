@@ -1,6 +1,5 @@
 import {humanizeDate} from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import CommentModel from '../model/comment-model';
 
 
 let commentEmoji = null;
@@ -16,7 +15,6 @@ const createPopupCommentsContainerTemplate = ({film, commentsData, emoji}) => {
   const renderCommentList = () => {
     comments.forEach((commentId) => {
       const currentComment = commentsData.find((item) => item.id === commentId);
-      //console.log(currentComment);
 
       if(currentComment){
         const {id, author, comment, date, emotion} = currentComment;
@@ -98,11 +96,7 @@ const createPopupCommentsContainerTemplate = ({film, commentsData, emoji}) => {
 
 export default class PopupCommentsContainerView extends AbstractStatefulView {
 
-  #commentModel = new CommentModel();
-  #commentsData = this.#commentModel.comments;
-
   #film = null;
-  //#comments = null;
   #handleFormSubmit = null;
   #handleDeleteClick = null;
 
@@ -110,8 +104,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
     super();
     const {film} = commentContainerData;
     this.#film = film;
-    //this.#comments = comments;
-
     this.#handleFormSubmit = onFormSubmit;
     this.#handleDeleteClick = onDeleteClick;
 
@@ -121,8 +113,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   get template() {
-    //return createPopupCommentsContainerTemplate(this.#film, this.#comments, );
-    console.log(this._state.commentsData);
     return createPopupCommentsContainerTemplate(this._state );
   }
 
@@ -145,7 +135,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   #commentSendHandler = () => {
-    //что-то тут при отправке коммента, типа
     this.#handleFormSubmit();
     //PopupCommentsContainerView.parseStateToComment(this._state);
   };
@@ -180,7 +169,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   static parseStateToComments(state) {
-    //const commentContainerData = {...state };
     const commentContainerData = structuredClone(state);
 
     if (!commentContainerData.emoji) {

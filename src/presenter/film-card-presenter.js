@@ -78,6 +78,7 @@ export default class FilmCardPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
+    // eslint-disable-next-line no-console
     console.log(updateType, data);
 
     switch (updateType) {
@@ -89,7 +90,7 @@ export default class FilmCardPresenter {
         // - обновить список (например, когда задача ушла в архив)
         //this.#clearFilmsList();
         //this.#renderFilmsList();
-        console.log('обновить список комментов');
+        //console.log('обновить список комментов');
         break;
       case UpdateType.MAJOR:
         // - обновить весь попап

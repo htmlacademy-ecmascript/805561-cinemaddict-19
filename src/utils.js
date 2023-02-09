@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {FilterType} from "./const";
+import {FilterType} from './const';
 
 // Результат: целое число из диапазона "от...до"
 function getRandomInteger(min, max) {
@@ -39,11 +39,6 @@ function getArrayRandomElements (array) {
 
 
 const humanizeDate = (date, templete) => dayjs(date).format(templete);
-
-/*function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}*/
-
 
 function getWeightForNullDate(dateA, dateB) {
   if (dateA === null && dateB === null) {
