@@ -24,7 +24,6 @@ export default class FilterView extends AbstractView {
     this.#currentFilter = currentFilterType;
     this.#handleFilterTypeChange = onFilterTypeChange;
 
-    //this.element.addEventListener('click', this.#filterTypeChangeHandler);
     this.element.querySelectorAll('.main-navigation__item')
       .forEach((item) =>{
         item.addEventListener('click', this.#filterTypeChangeHandler);
@@ -36,9 +35,6 @@ export default class FilterView extends AbstractView {
   }
 
   #filterTypeChangeHandler = (evt) => {
-   /* if (evt.target.tagName !== 'A') {
-      return;
-    }*/
     evt.preventDefault();
     this.#handleFilterTypeChange(evt.target.dataset.filterType);
   };
