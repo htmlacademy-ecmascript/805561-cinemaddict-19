@@ -1,9 +1,12 @@
 import FilmsModel from './model/films-model.js';
 import FilmsPresenter from './presenter/films-presenter.js';
+import FilterModel from './model/filter-model';
 
-const mainElement = document.querySelector('.main');
-const filmsPresenter = new FilmsPresenter();
+
 const filmsModel = new FilmsModel();
+const filterModel = new FilterModel();
+
+const filmsPresenter = new FilmsPresenter(filmsModel, filterModel);
 
 
-filmsPresenter.init(mainElement, filmsModel);
+filmsPresenter.init();
