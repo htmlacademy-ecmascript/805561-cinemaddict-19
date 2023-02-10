@@ -6,9 +6,9 @@ const createFilterTemplate = (filterCounts, currentFilter) => {
 
   return `<nav class="main-navigation">
     <a href="#all" class="main-navigation__item ${FilterType.ALL === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.ALL}>All movies</a>
-    <a href="#watchlist" class="main-navigation__item ${FilterType.WATCHLIST === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.WATCHLIST} >Watchlist <span class="main-navigation__item-count">${watchlist}</span></a>
-    <a href="#history" class="main-navigation__item ${FilterType.HISTORY === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.HISTORY}>History <span class="main-navigation__item-count">${alreadyWatched}</span></a>
-    <a href="#favorites" class="main-navigation__item ${FilterType.FAVORITES === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.FAVORITES}>Favorites <span class="main-navigation__item-count">${favorite}</span></a>
+    <a href="#watchlist" class="main-navigation__item ${FilterType.WATCHLIST === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.WATCHLIST} >Watchlist <span class="main-navigation__item-count" data-filter-type=${FilterType.WATCHLIST}>${watchlist}</span></a>
+    <a href="#history" class="main-navigation__item ${FilterType.HISTORY === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.HISTORY}>History <span class="main-navigation__item-count" data-filter-type=${FilterType.HISTORY}>${alreadyWatched}</span></a>
+    <a href="#favorites" class="main-navigation__item ${FilterType.FAVORITES === currentFilter ? 'main-navigation__item--active' : ''}" data-filter-type=${FilterType.FAVORITES}>Favorites <span class="main-navigation__item-count" data-filter-type=${FilterType.FAVORITES}>${favorite}</span></a>
     </nav>`;
 };
 
@@ -24,7 +24,11 @@ export default class FilterView extends AbstractView {
     this.#currentFilter = currentFilterType;
     this.#handleFilterTypeChange = onFilterTypeChange;
 
-    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+    //this.element.addEventListener('click', this.#filterTypeChangeHandler);
+    this.element.querySelectorAll('.main-navigation__item')
+      .forEach((item) =>{
+        item.addEventListener('click', this.#filterTypeChangeHandler);
+      });
   }
 
   get template (){
@@ -32,9 +36,9 @@ export default class FilterView extends AbstractView {
   }
 
   #filterTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
+   /* if (evt.target.tagName !== 'A') {
       return;
-    }
+    }*/
     evt.preventDefault();
     this.#handleFilterTypeChange(evt.target.dataset.filterType);
   };
