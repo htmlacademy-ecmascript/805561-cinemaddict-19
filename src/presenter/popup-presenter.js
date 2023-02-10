@@ -18,26 +18,15 @@ export default class PopupPresenter {
   #PopupInnerComponent = new PopupInnerView;
   bodyElement = document.body;
 
+
   constructor({popupContainer, commentModel, onDataChange}) {
     this.#popupContainer = popupContainer;
     this.#commentModel = commentModel;
     this.#handleDataChange = onDataChange;
-
-
   }
 
-  closePopup = () => {
-    this.destroy();
-
-    this.bodyElement.classList.remove('hide-overflow');
-    document.removeEventListener('keydown',this.#escKeyDownHandler);
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.closePopup();
-    }
+  init = (film) => {
+    this.#renderPopup(film);
   };
 
   #renderPopup = (film) => {
@@ -67,6 +56,27 @@ export default class PopupPresenter {
     render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
     render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
 
+    //console.log(this.#popupCommentsContainer);
+    this.#popupCommentsContainer.reset(commentContainerData);
+  };
+
+  closePopup = () => {
+    //console.log('closePopup');
+    //console.log(this.#popupCommentsContainer);
+    /*this.#popupCommentsContainer.reset({
+      film: this.#film,
+      commentsData: this.#comments,
+    })*/
+    this.destroy();
+    this.bodyElement.classList.remove('hide-overflow');
+    document.removeEventListener('keydown',this.#escKeyDownHandler);
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.closePopup();
+    }
   };
 
   #handleFormSubmit = (update) => {
@@ -85,11 +95,8 @@ export default class PopupPresenter {
     );
   };
 
-  init = (film) => {
-    this.#renderPopup(film);
-  };
-
   destroy() {
+
     remove(this.#PopupWrapperComponent);
     remove(this.#PopupInnerComponent);
     remove(this.#popupFilmContainer);

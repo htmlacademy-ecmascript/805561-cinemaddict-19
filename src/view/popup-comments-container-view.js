@@ -2,9 +2,10 @@ import {humanizeDate} from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 
-let commentEmoji = null;
+let newCommentEmoji = null;
+let newCommentText = '';
 
-const createPopupCommentsContainerTemplate = ({film, commentsData, emoji}) => {
+const createPopupCommentsContainerTemplate = ({film, commentsData, newComment}) => {
 
   const {
     comments,
@@ -45,7 +46,8 @@ const createPopupCommentsContainerTemplate = ({film, commentsData, emoji}) => {
   };
   const commentsList = renderCommentList();
 
-  commentEmoji = emoji;
+  newCommentEmoji = newComment.emotion;
+  newCommentText = newComment.comment;
 
   return (
     `
@@ -59,11 +61,11 @@ const createPopupCommentsContainerTemplate = ({film, commentsData, emoji}) => {
 
       <form class="film-details__new-comment"  action="" method="get">
         <div class="film-details__add-emoji-label">
-             ${commentEmoji ? `<img src="images/emoji/${commentEmoji}.png" width="55" height="55" alt="emoji-smile">` : ''}
+             ${newCommentEmoji ? `<img src="images/emoji/${newCommentEmoji}.png" width="55" height="55" alt="emoji-smile">` : ''}
         </div>
 
         <label class="film-details__comment-label">
-          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newCommentText}</textarea>
         </label>
 
         <div class="film-details__emoji-list">
@@ -113,37 +115,68 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   get template() {
-    return createPopupCommentsContainerTemplate(this._state );
+    //console.log(this._state);
+    return createPopupCommentsContainerTemplate(this._state);
+  }
+
+  reset(commentContainerData) {
+    //console.log('reset');
+    //console.log(this._state);
+    this.updateElement(
+      PopupCommentsContainerView.parseCommentToState(commentContainerData),
+    );
+    /*this.updateElement({
+      newComment: {
+        emotion: null,
+        comment: '',
+      }
+    });*/
+    //console.log(this._state);
   }
 
   _restoreHandlers() {
     this.element.querySelectorAll('.film-details__emoji-item')
       .forEach((item) =>{
         item.addEventListener('click', this.#emojiItemClickHandler);
-        if(commentEmoji === item.value){
+        if(newCommentEmoji === item.value){
           item.setAttribute('checked', true);
         }
       });
 
     //функция отправки комментария по Ctrl/Command + Enter
-    this.element.querySelector('.film-details__new-comment').addEventListener('submit', this.#commentSendHandler);
+    /*this.element.querySelector('.film-details__new-comment')
+      .addEventListener('submit', this.#commentSendHandler);*/
 
     this.element.querySelectorAll('.film-details__comment-delete')
       .forEach((item) =>{
         item.addEventListener('click', this.#commentDeleteClickHandler);
       });
+    this.element.querySelector('.film-details__comment-input')
+      .addEventListener('input', this.#commentInputHandler);
   }
 
-  #commentSendHandler = () => {
-    this.#handleFormSubmit();
-    //PopupCommentsContainerView.parseStateToComment(this._state);
+  /*#commentSendHandler = () => {
+    this.#handleFormSubmit(PopupCommentsContainerView.parseStateToComments(this._state));
+  };*/
+
+  #commentInputHandler = (evt) => {
+    //console.log(this._state);
+    evt.preventDefault();
+    this._setState({
+      newComment: {
+        emotion: newCommentEmoji,
+        comment: evt.target.value,
+      }
+    });
   };
 
   #emojiItemClickHandler = (evt) => {
-    commentEmoji = evt.target.value;
-
+    newCommentEmoji = evt.target.value;
     this.updateElement({
-      emoji: commentEmoji,
+      newComment: {
+        emotion: newCommentEmoji,
+        comment: this._state.newComment.comment,
+      }
     });
 
   };
@@ -164,18 +197,29 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
 
   static parseCommentToState(commentContainerData) {
     return {...structuredClone(commentContainerData),
-      emoji: commentEmoji,
+      newComment:{
+        // emotion: newCommentEmoji,
+        // comment: newCommentText,
+        emotion: null,
+        comment: '',
+      }
     };
   }
 
   static parseStateToComments(state) {
     const commentContainerData = structuredClone(state);
 
-    if (!commentContainerData.emoji) {
-      commentContainerData.emoji = null;
+    /*if (!commentContainerData.newComment.emotion) {
+      commentContainerData.newComment.emotion = null;
+    }
+    if (!commentContainerData.newComment.comment) {
+      commentContainerData.newComment.comment = null;
+    }*/
+    if (!commentContainerData.newComment) {
+      commentContainerData.newComment = null;
     }
 
-    delete commentContainerData.emoji;
+    delete commentContainerData.newComment;
 
     return commentContainerData;
   }
