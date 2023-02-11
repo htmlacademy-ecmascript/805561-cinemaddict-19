@@ -98,7 +98,6 @@ export default class FilmCardPresenter {
     }
   };
 
-
   #handleFavoriteClick = (film) => {
     const newFilm = structuredClone(film);
     const {userDetails} = film;
