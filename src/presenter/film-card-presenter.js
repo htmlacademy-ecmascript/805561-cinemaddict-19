@@ -1,33 +1,47 @@
 import {render, remove, replace} from '../framework/render';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, END_POINT, AUTHORIZATION} from '../const.js';
 import PopupPresenter from './popup-presenter';
 import FilmCardView from '../view/film-card-view';
 import CommentModel from '../model/comment-model';
+import CommentsApiService from '../comments-api-service';
 
 const bodyElement = document.body;
 
 
 export default class FilmCardPresenter {
 
-  #commentModel = new CommentModel();
+  //#commentModel = new CommentModel();
+  /*#commentModel = new CommentModel({
+    commentsApiService: new CommentsApiService(END_POINT, AUTHORIZATION)
+  });*/
+  #commentModel = null;
+  #comments = null;
+
+
+  #filmsModel = null;
   #handleDataChange = null;
   #popupPresenter = null;
   #filmsListContainer = null;
   #filmComponent = null;
   #handlePopupChange = null;
 
-  constructor({filmsListContainer, onDataChange, onPopupChange}) {
+  constructor({filmsListContainer, onDataChange, onPopupChange, filmsModel}) {
     this.#filmsListContainer = filmsListContainer;
     this.#handleDataChange = onDataChange;
     this.#handlePopupChange = onPopupChange;
+    this.#filmsModel = filmsModel;
 
-    this.#commentModel.addObserver(this.#handleModelEvent);
+    //this.#commentModel.addObserver(this.#handleModelEvent);
+
   }
 
   #openPopup = (film) => {
+
+
     this.#popupChangeHendler();
     this.#popupPresenter.init(film);
     bodyElement.classList.add('hide-overflow');
+
   };
 
   removePopup() {
@@ -37,11 +51,22 @@ export default class FilmCardPresenter {
   }
 
   init = (film) => {
+    this.#commentModel = new CommentModel({
+      commentsApiService: new CommentsApiService(END_POINT, AUTHORIZATION)
+    });
+    this.#commentModel.init(film);
+    this.#comments = [...this.#commentModel.comments];
+    console.log(this.#comments);
+
     this.#popupPresenter = new PopupPresenter({
       popupContainer: bodyElement,
       commentModel: this.#commentModel,
       onDataChange: this.#handleViewAction,
+      onFilmChange: this.#handleDataChange,
+      filmsModel: this.#filmsModel,
+      //comments: this.#comments,
     });
+
 
     const prevFilmComponent = this.#filmComponent;
 
@@ -77,7 +102,7 @@ export default class FilmCardPresenter {
     }
   };
 
-  #handleModelEvent = (updateType, data) => {
+  /*#handleModelEvent = (updateType, data) => {
     // eslint-disable-next-line no-console
     console.log(updateType, data);
 
@@ -96,7 +121,7 @@ export default class FilmCardPresenter {
         // - обновить весь попап
         break;
     }
-  };
+  };*/
 
   #handleFavoriteClick = (film) => {
     const newFilm = structuredClone(film);

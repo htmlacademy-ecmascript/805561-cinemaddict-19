@@ -2,9 +2,7 @@ import FilmsModel from './model/films-model.js';
 import FilmsPresenter from './presenter/films-presenter.js';
 import FilterModel from './model/filter-model';
 import FilmsApiService from './films-api-service.js';
-
-const AUTHORIZATION = 'Basic bR7akO25zyA9wr3j';
-const END_POINT = 'https://19.ecmascript.pages.academy/cinemaddict';
+import {AUTHORIZATION, END_POINT} from './const';
 
 
 const filmsModel = new FilmsModel({

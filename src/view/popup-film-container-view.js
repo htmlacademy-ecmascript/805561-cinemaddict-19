@@ -127,14 +127,29 @@ export default class PopupFilmsContainerView extends AbstractView {
 
   #film = null;
   #handlePopupClose = null;
+  #handleFavoriteClick = null;
+  #handleWatchlistClick = null;
+  #handleAlreadyWatchedClick = null;
+  #handlePopupRerender = null;
 
-
-  constructor({film, onClick}) {
+  constructor({film, onClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick, onPopupRerender}) {
     super();
     this.#film = film;
     this.#handlePopupClose = onClick;
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.#handleWatchlistClick = onWatchlistClick;
+    this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
+    this.#handlePopupRerender = onPopupRerender
 
-    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#popupCloseHandler);
+    this.element.querySelector('.film-details__close-btn')
+      .addEventListener('click', this.#popupCloseHandler);
+
+    this.element.querySelector('.film-details__control-button--favorite')
+      .addEventListener('click', this.#favoriteClickHandler);
+    this.element.querySelector('.film-details__control-button--watchlist')
+      .addEventListener('click', this.#watchlistClickHandler);
+    this.element.querySelector('.film-details__control-button--watched')
+      .addEventListener('click', this.#alreadyWatchedClickHandler);
   }
 
   get template() {
@@ -144,6 +159,27 @@ export default class PopupFilmsContainerView extends AbstractView {
   #popupCloseHandler = (evt) => {
     evt.preventDefault();
     this.#handlePopupClose();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick(this.#film);
+    this.#handlePopupRerender(this.#film);
+    console.log('клик в попапе')
+  };
+
+  #watchlistClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleWatchlistClick(this.#film);
+    this.#handlePopupRerender(this.#film);
+    console.log('клик в попапе')
+  };
+
+  #alreadyWatchedClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleAlreadyWatchedClick(this.#film);
+    this.#handlePopupRerender(this.#film);
+    console.log('клик в попапе')
   };
 
 }

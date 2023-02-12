@@ -8,7 +8,9 @@ import {UpdateType, UserAction} from '../const';
 export default class PopupPresenter {
   #popupContainer = null;
   #commentModel = null;
+  #filmsModel = null;
   #handleDataChange = null;
+  #handleFilmChange = null;
   #film = null;
   #comments = null;
   #popupFilmContainer = null;
@@ -18,11 +20,16 @@ export default class PopupPresenter {
   #PopupInnerComponent = new PopupInnerView;
   bodyElement = document.body;
 
-
-  constructor({popupContainer, commentModel, onDataChange}) {
+  constructor({popupContainer, commentModel, onDataChange, onFilmChange, filmsModel/*, comments*/}) {
     this.#popupContainer = popupContainer;
     this.#commentModel = commentModel;
     this.#handleDataChange = onDataChange;
+    this.#handleFilmChange = onFilmChange;
+    this.#filmsModel = filmsModel;
+    //this.#comments = comments;
+
+    //this.#filmsModel.addObserver(this.#rerenderpopupFilmContainer);
+    this.#filmsModel.addObserver(this.#handleDataChange);
   }
 
   init = (film) => {
@@ -34,8 +41,12 @@ export default class PopupPresenter {
     this.#comments = [...this.#commentModel.comments];
 
     this.#popupFilmContainer = new PopupFilmContainerView({
-      film,
+      film: this.#film,
       onClick: this.closePopup,
+      onFavoriteClick: this.#handleFavoriteClick,
+      onWatchlistClick: this.#handleWatchlistClick,
+      onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
+      onPopupRerender: this.#rerenderpopupFilmContainer,
     });
 
     const commentContainerData = {
@@ -58,6 +69,19 @@ export default class PopupPresenter {
 
     //console.log(this.#popupCommentsContainer);
     this.#popupCommentsContainer.reset(commentContainerData);
+
+    //console.log('renderPopup');
+    //console.log(this.#film);
+  };
+
+  #rerenderpopupFilmContainer = (film) => {
+    //console.log(film);
+    //console.log(this.#filmsModel.films);
+    const newFilm = this.#filmsModel.films.find((ithem) =>Number(ithem.id) === Number(film.id));
+    //console.log('rerenderpopupFilmContainer');
+    //console.log(newFilm);
+    this.destroy()
+    this.#renderPopup(newFilm);
   };
 
   closePopup = () => {
@@ -95,8 +119,40 @@ export default class PopupPresenter {
     );
   };
 
-  destroy() {
+  #handleFavoriteClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
 
+    this.#handleFilmChange(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MAJOR,
+      {...newFilm, userDetails: {...userDetails, favorite: !film.userDetails.favorite } },
+    );
+  };
+
+  #handleWatchlistClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleFilmChange(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MAJOR,
+      {...newFilm, userDetails: {...userDetails, watchlist: !film.userDetails.watchlist } },
+    );
+  };
+
+  #handleAlreadyWatchedClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleFilmChange(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MAJOR,
+      {...newFilm, userDetails: {...userDetails, alreadyWatched: !film.userDetails.alreadyWatched } },
+    );
+  };
+
+  destroy() {
     remove(this.#PopupWrapperComponent);
     remove(this.#PopupInnerComponent);
     remove(this.#popupFilmContainer);

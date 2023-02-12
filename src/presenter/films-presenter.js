@@ -45,7 +45,7 @@ export default class FilmsPresenter {
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
 
-    this.#filmsModel.addObserver(this.#handleModelEvent, this.#handleViewAction);
+    this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
@@ -217,11 +217,6 @@ export default class FilmsPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    //console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
         this.#filmCardPresenterList.get(data.id).init(data);
@@ -239,8 +234,6 @@ export default class FilmsPresenter {
         remove(this.#loadingComponent);
         this.#clearMainFilmsContainer();
         this.#renderMainFilmsContainer();
-        //this.#clearFilmsList;
-        //this.#renderFilmsList();
         break;
     }
   };
@@ -250,13 +243,13 @@ export default class FilmsPresenter {
       filmsListContainer: this.#filmsListContainerComponent.element,
       onDataChange: this.#handleViewAction,
       onPopupChange: this.#handlePopupChange,
+      filmsModel: this.#filmsModel,
     });
     filmCardPresenter.init(film);
     this.#filmCardPresenterList.set(film.id, filmCardPresenter);
   };
 
   #renderLoading() {
-    //render(this.#loadingComponent, this.#filmsComponent.element, RenderPosition.AFTERBEGIN);
     render(this.#loadingComponent, mainElement);
   }
 
