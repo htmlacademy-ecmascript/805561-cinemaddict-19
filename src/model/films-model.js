@@ -72,7 +72,7 @@ export default class FilmsModel extends Observable {
     if (index === -1) {
       throw new Error('Can\'t update unexisting film');
     }
-    console.log(update);
+
     /*this.#films = [
       ...this.#films.slice(0, index),
       update,
@@ -84,9 +84,7 @@ export default class FilmsModel extends Observable {
     try {
       const response = await this.#filmsApiService.updateFilm(update);
       const updatedFilm = this.#adaptToClient(response);
-      console.log(response);
-      console.log(updatedFilm);
-      console.log(update);
+
       this.#films = [
         ...this.#films.slice(0, index),
         updatedFilm,
@@ -124,22 +122,33 @@ export default class FilmsModel extends Observable {
   }*/
 
   #adaptToClient(film) {
+    // eslint-disable-next-line camelcase
     const {film_info, user_details} = film;
 
     const userDetails = {
+      // eslint-disable-next-line camelcase
       ...user_details,
+      // eslint-disable-next-line camelcase
       alreadyWatched: user_details['already_watched'],
+      // eslint-disable-next-line camelcase
       watchingDate: user_details['watching_date'],
     };
     const release = {
+      // eslint-disable-next-line camelcase
       ...film_info.release,
+      // eslint-disable-next-line camelcase
       releaseCountry: film_info.release['release_country'],
     };
     const filmInfo = {
+      // eslint-disable-next-line camelcase
       ...film_info,
+      // eslint-disable-next-line camelcase
       alternativeTitle: film_info['alternative_title'],
+      // eslint-disable-next-line camelcase
       totalRating: film_info['total_rating'],
+      // eslint-disable-next-line camelcase
       ageRating: film_info['age_rating'],
+      // eslint-disable-next-line camelcase
       runtime: film_info['duration'],
       release
     };

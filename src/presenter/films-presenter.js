@@ -203,7 +203,6 @@ export default class FilmsPresenter {
     // update - обновленные данные
     switch (actionType) {
       case UserAction.UPDATE_FILM_CARD:
-        console.log(update);
         this.#filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_FILM_CARD:
@@ -212,7 +211,6 @@ export default class FilmsPresenter {
       case UserAction.DELETE_FILM_CARD:
         this.#filmsModel.deleteFilm(updateType, update);
         break;
-
     }
   };
 

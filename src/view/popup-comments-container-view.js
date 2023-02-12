@@ -115,7 +115,7 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   get template() {
-    //console.log(this._state);
+    console.log(this._state);
     return createPopupCommentsContainerTemplate(this._state);
   }
 
@@ -144,8 +144,8 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
       });
 
     //функция отправки комментария по Ctrl/Command + Enter
-    /*this.element.querySelector('.film-details__new-comment')
-      .addEventListener('submit', this.#commentSendHandler);*/
+    this.element.querySelector('.film-details__new-comment')
+      .addEventListener('submit', this.#commentSendHandler);
 
     this.element.querySelectorAll('.film-details__comment-delete')
       .forEach((item) =>{
@@ -155,12 +155,11 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
       .addEventListener('input', this.#commentInputHandler);
   }
 
-  /*#commentSendHandler = () => {
+  #commentSendHandler = () => {
     this.#handleFormSubmit(PopupCommentsContainerView.parseStateToComments(this._state));
-  };*/
+  };
 
   #commentInputHandler = (evt) => {
-    //console.log(this._state);
     evt.preventDefault();
     this._setState({
       newComment: {
@@ -198,8 +197,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   static parseCommentToState(commentContainerData) {
     return {...structuredClone(commentContainerData),
       newComment:{
-        // emotion: newCommentEmoji,
-        // comment: newCommentText,
         emotion: null,
         comment: '',
       }
@@ -209,12 +206,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   static parseStateToComments(state) {
     const commentContainerData = structuredClone(state);
 
-    /*if (!commentContainerData.newComment.emotion) {
-      commentContainerData.newComment.emotion = null;
-    }
-    if (!commentContainerData.newComment.comment) {
-      commentContainerData.newComment.comment = null;
-    }*/
     if (!commentContainerData.newComment) {
       commentContainerData.newComment = null;
     }

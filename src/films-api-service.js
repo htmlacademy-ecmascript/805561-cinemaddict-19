@@ -28,6 +28,7 @@ export default class FilmsApiService extends ApiService {
 
     const {filmInfo, userDetails} = film;
 
+    // eslint-disable-next-line camelcase
     const user_details = {
       ...userDetails,
       'already_watched': userDetails.alreadyWatched,
@@ -37,6 +38,7 @@ export default class FilmsApiService extends ApiService {
       ...filmInfo.release,
       'release_country': filmInfo.release.releaseCountry,
     };
+    // eslint-disable-next-line camelcase
     const film_info = {
       ...filmInfo,
       'alternative_title': filmInfo.alternativeTitle,
@@ -47,7 +49,9 @@ export default class FilmsApiService extends ApiService {
     };
 
     const adaptedFilm = {...film,
+      // eslint-disable-next-line camelcase
       film_info,
+      // eslint-disable-next-line camelcase
       user_details,
     };
 

@@ -9,21 +9,18 @@ const bodyElement = document.body;
 
 
 export default class FilmCardPresenter {
-
-  //#commentModel = new CommentModel();
-  /*#commentModel = new CommentModel({
+  #commentModel = new CommentModel({
     commentsApiService: new CommentsApiService(END_POINT, AUTHORIZATION)
-  });*/
-  #commentModel = null;
+  });
+
   #comments = null;
-
-
   #filmsModel = null;
   #handleDataChange = null;
   #popupPresenter = null;
   #filmsListContainer = null;
   #filmComponent = null;
   #handlePopupChange = null;
+
 
   constructor({filmsListContainer, onDataChange, onPopupChange, filmsModel}) {
     this.#filmsListContainer = filmsListContainer;
@@ -32,16 +29,12 @@ export default class FilmCardPresenter {
     this.#filmsModel = filmsModel;
 
     //this.#commentModel.addObserver(this.#handleModelEvent);
-
   }
 
   #openPopup = (film) => {
-
-
     this.#popupChangeHendler();
     this.#popupPresenter.init(film);
     bodyElement.classList.add('hide-overflow');
-
   };
 
   removePopup() {
@@ -50,13 +43,10 @@ export default class FilmCardPresenter {
     //}
   }
 
+
   init = (film) => {
-    this.#commentModel = new CommentModel({
-      commentsApiService: new CommentsApiService(END_POINT, AUTHORIZATION)
-    });
     this.#commentModel.init(film);
     this.#comments = [...this.#commentModel.comments];
-    console.log(this.#comments);
 
     this.#popupPresenter = new PopupPresenter({
       popupContainer: bodyElement,
@@ -64,7 +54,6 @@ export default class FilmCardPresenter {
       onDataChange: this.#handleViewAction,
       onFilmChange: this.#handleDataChange,
       filmsModel: this.#filmsModel,
-      //comments: this.#comments,
     });
 
 
@@ -115,7 +104,10 @@ export default class FilmCardPresenter {
         // - обновить список (например, когда задача ушла в архив)
         //this.#clearFilmsList();
         //this.#renderFilmsList();
-        //console.log('обновить список комментов');
+        console.log('обновить список комментов');
+        console.log(this.#film.id);
+        console.log(this.#filmsModel.films);
+        this.init(this.#film);
         break;
       case UpdateType.MAJOR:
         // - обновить весь попап

@@ -20,13 +20,12 @@ export default class PopupPresenter {
   #PopupInnerComponent = new PopupInnerView;
   bodyElement = document.body;
 
-  constructor({popupContainer, commentModel, onDataChange, onFilmChange, filmsModel/*, comments*/}) {
+  constructor({popupContainer, commentModel, onDataChange, onFilmChange, filmsModel}) {
     this.#popupContainer = popupContainer;
     this.#commentModel = commentModel;
     this.#handleDataChange = onDataChange;
     this.#handleFilmChange = onFilmChange;
     this.#filmsModel = filmsModel;
-    //this.#comments = comments;
 
     //this.#filmsModel.addObserver(this.#rerenderpopupFilmContainer);
     this.#filmsModel.addObserver(this.#handleDataChange);
@@ -67,30 +66,16 @@ export default class PopupPresenter {
     render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
     render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
 
-    //console.log(this.#popupCommentsContainer);
     this.#popupCommentsContainer.reset(commentContainerData);
-
-    //console.log('renderPopup');
-    //console.log(this.#film);
   };
 
   #rerenderpopupFilmContainer = (film) => {
-    //console.log(film);
-    //console.log(this.#filmsModel.films);
     const newFilm = this.#filmsModel.films.find((ithem) =>Number(ithem.id) === Number(film.id));
-    //console.log('rerenderpopupFilmContainer');
-    //console.log(newFilm);
-    this.destroy()
+    this.destroy();
     this.#renderPopup(newFilm);
   };
 
   closePopup = () => {
-    //console.log('closePopup');
-    //console.log(this.#popupCommentsContainer);
-    /*this.#popupCommentsContainer.reset({
-      film: this.#film,
-      commentsData: this.#comments,
-    })*/
     this.destroy();
     this.bodyElement.classList.remove('hide-overflow');
     document.removeEventListener('keydown',this.#escKeyDownHandler);
@@ -111,11 +96,11 @@ export default class PopupPresenter {
     );
   };
 
-  #handleDeleteClick = (comment) => {
+  #handleDeleteClick = (commentId) => {
     this.#handleDataChange(
       UserAction.DELETE_COMMENT,
       UpdateType.MINOR,
-      comment,
+      commentId,
     );
   };
 
