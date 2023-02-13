@@ -86,7 +86,7 @@ export default class PopupPresenter {
       this.closePopup();
     }
 
-    const isCtrlCmd = event.ctrlKey || event.metaKey;
+    const isCtrlCmd = evt.ctrlKey || evt.metaKey;
     const isEnter = evt.key === 'Enter' || evt.key === 'Enter';
     if (isCtrlCmd && isEnter ) {
       this.#popupCommentsContainer.commentSendHandler();
