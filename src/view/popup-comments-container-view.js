@@ -115,27 +115,11 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   get template() {
-    //console.log(this._state);
     return createPopupCommentsContainerTemplate(this._state);
   }
 
-  reset(/*commentContainerData*/) {
-    //console.log('reset');
-    //console.log(this._state);
-
-    /*this.updateElement(
-      PopupCommentsContainerView.parseCommentToState(commentContainerData),
-    );*/
-    //this.updateElement(this._state);
+  reset() {
     this.updateElement(PopupCommentsContainerView.parseStateToComments(this._state));
-
-    /*this.updateElement({
-      newComment: {
-        emotion: null,
-        comment: '',
-      }
-    });*/
-    //console.log(this._state);
   }
 
   _restoreHandlers() {
@@ -156,21 +140,13 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   commentSendHandler = () => {
-    //const newComment = PopupCommentsContainerView.parseStateToComments(this._state);
     const newComment = this._state.newComment;
     const filmId = this.#film.id;
-    if(filmId && newComment){
 
-    }
     this.#handleFormSubmit({
       filmId,
       newComment
     });
-    /*console.log('форма отправилась');
-    console.log(filmId);
-    console.log(newComment);
-    console.log(this._state);
-    console.log(PopupCommentsContainerView.parseStateToComments(this._state));*/
 
     this.updateElement({
       newComment: {
@@ -211,8 +187,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
     this.updateElement(
       this._state.commentsData = newCommentData
     );
-    //console.log(PopupCommentsContainerView.parseStateToComments(this._state));
-    //this.#handleDeleteClick(PopupCommentsContainerView.parseStateToComments(this._state));
   };
 
   static parseCommentToState(commentContainerData) {

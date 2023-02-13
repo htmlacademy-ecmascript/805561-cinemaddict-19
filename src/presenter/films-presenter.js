@@ -196,11 +196,6 @@ export default class FilmsPresenter {
   };
 
   #handleViewAction = (actionType, updateType, update) => {
-    //console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
     switch (actionType) {
       case UserAction.UPDATE_FILM_CARD:
         this.#filmsModel.updateFilm(updateType, update);
