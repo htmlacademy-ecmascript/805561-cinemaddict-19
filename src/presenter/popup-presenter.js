@@ -10,7 +10,6 @@ export default class PopupPresenter {
   #commentModel = null;
   #filmsModel = null;
   #handleDataChange = null;
-  #handleFilmChange = null;
   #film = null;
   #comments = null;
   #popupFilmContainer = null;
@@ -20,14 +19,13 @@ export default class PopupPresenter {
   #PopupInnerComponent = new PopupInnerView;
   bodyElement = document.body;
 
-  constructor({popupContainer, commentModel, onDataChange, onFilmChange, filmsModel}) {
+  constructor({popupContainer, commentModel, onDataChange, filmsModel}) {
     this.#popupContainer = popupContainer;
     this.#commentModel = commentModel;
     this.#handleDataChange = onDataChange;
-    this.#handleFilmChange = onFilmChange;
     this.#filmsModel = filmsModel;
 
-    //this.#filmsModel.addObserver(this.#rerenderpopupFilmContainer);
+    this.#commentModel.addObserver(this.#reinitFilmsModel);
   }
 
   init = (film) => {
@@ -44,7 +42,6 @@ export default class PopupPresenter {
       onFavoriteClick: this.#handleFavoriteClick,
       onWatchlistClick: this.#handleWatchlistClick,
       onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
-      onPopupRerender: this.#rerenderpopupFilmContainer,
     });
 
     const commentContainerData = {
@@ -68,9 +65,13 @@ export default class PopupPresenter {
     this.#popupCommentsContainer.reset();
   };
 
+  #reinitFilmsModel = () => {
+    this.#filmsModel.init();
+  };
+
   #rerenderpopupFilmContainer = (film) => {
-    const newFilm = this.#filmsModel.films.find((ithem) =>Number(ithem.id) === Number(film.id));
     this.destroy();
+    const newFilm = this.#filmsModel.films.find((ithem) =>Number(ithem.id) === Number(film.id));
     this.#renderPopup(newFilm);
   };
 
@@ -94,7 +95,6 @@ export default class PopupPresenter {
     }
   };
 
-
   #handleFormSubmit = (update) => {
     this.#handleDataChange(
       UserAction.ADD_COMMENT,
@@ -115,8 +115,8 @@ export default class PopupPresenter {
     const newFilm = structuredClone(film);
     const {userDetails} = film;
 
-    this.#handleFilmChange(
-      UserAction.UPDATE_FILM_CARD,
+    this.#handleDataChange(
+      UserAction.UPDATE_FILM_CARD_DETAIL,
       UpdateType.MAJOR,
       {...newFilm, userDetails: {...userDetails, favorite: !film.userDetails.favorite } },
     );
@@ -126,8 +126,8 @@ export default class PopupPresenter {
     const newFilm = structuredClone(film);
     const {userDetails} = film;
 
-    this.#handleFilmChange(
-      UserAction.UPDATE_FILM_CARD,
+    this.#handleDataChange(
+      UserAction.UPDATE_FILM_CARD_DETAIL,
       UpdateType.MAJOR,
       {...newFilm, userDetails: {...userDetails, watchlist: !film.userDetails.watchlist } },
     );
@@ -136,9 +136,8 @@ export default class PopupPresenter {
   #handleAlreadyWatchedClick = (film) => {
     const newFilm = structuredClone(film);
     const {userDetails} = film;
-
-    this.#handleFilmChange(
-      UserAction.UPDATE_FILM_CARD,
+    this.#handleDataChange(
+      UserAction.UPDATE_FILM_CARD_DETAIL,
       UpdateType.MAJOR,
       {...newFilm, userDetails: {...userDetails, alreadyWatched: !film.userDetails.alreadyWatched } },
     );

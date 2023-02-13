@@ -132,16 +132,16 @@ export default class PopupFilmsContainerView extends AbstractView {
   #handleFavoriteClick = null;
   #handleWatchlistClick = null;
   #handleAlreadyWatchedClick = null;
-  #handlePopupRerender = null;
 
-  constructor({film, onClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick, onPopupRerender}) {
+
+  constructor({film, onClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick }) {
     super();
     this.#film = film;
     this.#handlePopupClose = onClick;
     this.#handleFavoriteClick = onFavoriteClick;
     this.#handleWatchlistClick = onWatchlistClick;
     this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
-    this.#handlePopupRerender = onPopupRerender;
+
 
     this.element.querySelector('.film-details__close-btn')
       .addEventListener('click', this.#popupCloseHandler);
@@ -166,19 +166,16 @@ export default class PopupFilmsContainerView extends AbstractView {
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleFavoriteClick(this.#film);
-    this.#handlePopupRerender(this.#film);
   };
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleWatchlistClick(this.#film);
-    this.#handlePopupRerender(this.#film);
   };
 
   #alreadyWatchedClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleAlreadyWatchedClick(this.#film);
-    this.#handlePopupRerender(this.#film);
   };
 
 }

@@ -109,7 +109,6 @@ export default class FilmCardView extends AbstractView {
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleFavoriteClick(this.#filmCard);
-
   };
 
   #watchlistClickHandler = (evt) => {
