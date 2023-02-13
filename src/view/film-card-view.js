@@ -1,4 +1,4 @@
-import {humanizeDate} from '../utils';
+import {getTimeFromMins, humanizeDate} from '../utils';
 import AbstractView from '../framework/view/abstract-view';
 
 const createFilmCardTemplate = (filmCard) => {
@@ -25,6 +25,8 @@ const createFilmCardTemplate = (filmCard) => {
   const humanizedDate = date !== null
     ? humanizeDate(date, template)
     : '';
+
+  const convertedRuntime = getTimeFromMins(runtime);
 
   const fragment = new DocumentFragment();
   genre.forEach((element) => {
@@ -53,7 +55,7 @@ const createFilmCardTemplate = (filmCard) => {
         <p class="film-card__rating">${totalRating}</p>
         <p class="film-card__info">
           <span class="film-card__year">${humanizedDate}</span>
-          <span class="film-card__duration">${runtime}</span>
+          <span class="film-card__duration">${convertedRuntime}</span>
           <span class="film-card__genre">${genres}</span>
         </p>
         <img src="./${poster}" alt="" class="film-card__poster">

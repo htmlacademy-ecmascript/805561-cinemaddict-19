@@ -1,6 +1,12 @@
 import dayjs from 'dayjs';
 import {FilterType} from './const';
 
+function getTimeFromMins(mins) {
+  const hours = Math.trunc(mins / 60);
+  const minutes = mins % 60;
+
+  return `${hours }h ${ minutes }m`;
+}
 
 const humanizeDate = (date, templete) => dayjs(date).format(templete);
 
@@ -38,4 +44,4 @@ const filter = {
 };
 
 
-export {humanizeDate, sortDateDown, sortRatingDown, filter};
+export {humanizeDate, sortDateDown, sortRatingDown, filter, getTimeFromMins};

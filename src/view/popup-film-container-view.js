@@ -1,4 +1,4 @@
-import {humanizeDate} from '../utils.js';
+import {getTimeFromMins, humanizeDate} from '../utils.js';
 import AbstractView from '../framework/view/abstract-view';
 
 const createPopupFilmContainerTemplate = (film) => {
@@ -27,6 +27,8 @@ const createPopupFilmContainerTemplate = (film) => {
       favorite,
     }
   } = film;
+
+  const convertedRuntime = getTimeFromMins(runtime);
 
   const template = 'DD MMM YYYY';
   const humanizedDate = date !== null
@@ -87,7 +89,7 @@ const createPopupFilmContainerTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Duration</td>
-              <td class="film-details__cell">${runtime}</td>
+              <td class="film-details__cell">${convertedRuntime}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
