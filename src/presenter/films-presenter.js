@@ -200,12 +200,6 @@ export default class FilmsPresenter {
       case UserAction.UPDATE_FILM_CARD:
         this.#filmsModel.updateFilm(updateType, update);
         break;
-      case UserAction.ADD_FILM_CARD:
-        this.#filmsModel.addFilm(updateType, update);
-        break;
-      case UserAction.DELETE_FILM_CARD:
-        this.#filmsModel.deleteFilm(updateType, update);
-        break;
     }
   };
 

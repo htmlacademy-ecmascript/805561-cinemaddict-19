@@ -25,6 +25,8 @@ export default class FilmCardPresenter {
     this.#handleDataChange = onDataChange;
     this.#handlePopupChange = onPopupChange;
     this.#filmsModel = filmsModel;
+
+    this.#filmsModel.addObserver(this.#handleModelEvent);
   }
 
   #openPopup = (film) => {
@@ -34,9 +36,7 @@ export default class FilmCardPresenter {
   };
 
   removePopup() {
-    //if (запилить исключение для уже открытого попапа) {
     this.#popupPresenter.closePopup();
-    //}
   }
 
   init = (film) => {
@@ -46,7 +46,6 @@ export default class FilmCardPresenter {
       popupContainer: bodyElement,
       commentModel: this.#commentModel,
       onDataChange: this.#handleViewAction,
-      onFilmChange: this.#handleDataChange,
       filmsModel: this.#filmsModel,
     });
 
@@ -79,7 +78,20 @@ export default class FilmCardPresenter {
         break;
       case UserAction.DELETE_COMMENT:
         this.#commentModel.deleteComment(updateType, update);
-        // и из массива айдишников комментов фильма убрать айдишник удаленного коммента
+        break;
+      case UserAction.UPDATE_FILM_CARD_DETAIL:
+        this.#filmsModel.updateFilm(updateType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (updateType, ) => {
+    switch (updateType) {
+      case UpdateType.MINOR:
+        this.init();
+        break;
+      case UpdateType.MAJOR:
+        this.init();
         break;
     }
   };

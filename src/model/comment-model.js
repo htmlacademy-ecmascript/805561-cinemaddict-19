@@ -29,6 +29,7 @@ export default class CommentModel extends Observable {
       const response = await this.#commentsApiService.addComment(update);
       this.#comments = [response, ...this.#comments];
       this._notify(updateType, response);
+
     } catch (err) {
       throw new Error('Can\'t add comment');
     }
@@ -49,10 +50,10 @@ export default class CommentModel extends Observable {
         ...this.#comments.slice(index + 1),
       ];
       this._notify(updateType);
+
     } catch(err) {
       throw new Error('Can\'t delete comment');
     }
   }
-
 
 }
