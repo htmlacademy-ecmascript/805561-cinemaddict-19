@@ -8,7 +8,9 @@ import {UpdateType, UserAction} from '../const';
 export default class PopupPresenter {
   #popupContainer = null;
   #commentModel = null;
+  #filmsModel = null;
   #handleDataChange = null;
+  #handleFilmChange = null;
   #film = null;
   #comments = null;
   #popupFilmContainer = null;
@@ -18,26 +20,18 @@ export default class PopupPresenter {
   #PopupInnerComponent = new PopupInnerView;
   bodyElement = document.body;
 
-  constructor({popupContainer, commentModel, onDataChange}) {
+  constructor({popupContainer, commentModel, onDataChange, onFilmChange, filmsModel}) {
     this.#popupContainer = popupContainer;
     this.#commentModel = commentModel;
     this.#handleDataChange = onDataChange;
+    this.#handleFilmChange = onFilmChange;
+    this.#filmsModel = filmsModel;
 
-
+    //this.#filmsModel.addObserver(this.#rerenderpopupFilmContainer);
   }
 
-  closePopup = () => {
-    this.destroy();
-
-    this.bodyElement.classList.remove('hide-overflow');
-    document.removeEventListener('keydown',this.#escKeyDownHandler);
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.closePopup();
-    }
+  init = (film) => {
+    this.#renderPopup(film);
   };
 
   #renderPopup = (film) => {
@@ -45,8 +39,12 @@ export default class PopupPresenter {
     this.#comments = [...this.#commentModel.comments];
 
     this.#popupFilmContainer = new PopupFilmContainerView({
-      film,
+      film: this.#film,
       onClick: this.closePopup,
+      onFavoriteClick: this.#handleFavoriteClick,
+      onWatchlistClick: this.#handleWatchlistClick,
+      onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
+      onPopupRerender: this.#rerenderpopupFilmContainer,
     });
 
     const commentContainerData = {
@@ -67,7 +65,35 @@ export default class PopupPresenter {
     render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
     render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
 
+    this.#popupCommentsContainer.reset();
   };
+
+  #rerenderpopupFilmContainer = (film) => {
+    const newFilm = this.#filmsModel.films.find((ithem) =>Number(ithem.id) === Number(film.id));
+    this.destroy();
+    this.#renderPopup(newFilm);
+  };
+
+  closePopup = () => {
+    this.destroy();
+    this.bodyElement.classList.remove('hide-overflow');
+    document.removeEventListener('keydown',this.#escKeyDownHandler);
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.closePopup();
+    }
+
+    const isCtrlCmd = event.ctrlKey || event.metaKey;
+    const isEnter = evt.key === 'Enter' || evt.key === 'Enter';
+    if (isCtrlCmd && isEnter ) {
+      this.#popupCommentsContainer.commentSendHandler();
+      this.#popupCommentsContainer.reset();
+    }
+  };
+
 
   #handleFormSubmit = (update) => {
     this.#handleDataChange(
@@ -77,16 +103,45 @@ export default class PopupPresenter {
     );
   };
 
-  #handleDeleteClick = (comment) => {
+  #handleDeleteClick = (commentId) => {
     this.#handleDataChange(
       UserAction.DELETE_COMMENT,
       UpdateType.MINOR,
-      comment,
+      commentId,
     );
   };
 
-  init = (film) => {
-    this.#renderPopup(film);
+  #handleFavoriteClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleFilmChange(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MAJOR,
+      {...newFilm, userDetails: {...userDetails, favorite: !film.userDetails.favorite } },
+    );
+  };
+
+  #handleWatchlistClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleFilmChange(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MAJOR,
+      {...newFilm, userDetails: {...userDetails, watchlist: !film.userDetails.watchlist } },
+    );
+  };
+
+  #handleAlreadyWatchedClick = (film) => {
+    const newFilm = structuredClone(film);
+    const {userDetails} = film;
+
+    this.#handleFilmChange(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MAJOR,
+      {...newFilm, userDetails: {...userDetails, alreadyWatched: !film.userDetails.alreadyWatched } },
+    );
   };
 
   destroy() {

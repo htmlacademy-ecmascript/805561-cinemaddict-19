@@ -1,4 +1,4 @@
-import {humanizeDate} from '../utils.js';
+import {getTimeFromMins, humanizeDate} from '../utils.js';
 import AbstractView from '../framework/view/abstract-view';
 
 const createPopupFilmContainerTemplate = (film) => {
@@ -27,6 +27,8 @@ const createPopupFilmContainerTemplate = (film) => {
       favorite,
     }
   } = film;
+
+  const convertedRuntime = getTimeFromMins(runtime);
 
   const template = 'DD MMM YYYY';
   const humanizedDate = date !== null
@@ -87,7 +89,7 @@ const createPopupFilmContainerTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Duration</td>
-              <td class="film-details__cell">${runtime}</td>
+              <td class="film-details__cell">${convertedRuntime}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -127,14 +129,29 @@ export default class PopupFilmsContainerView extends AbstractView {
 
   #film = null;
   #handlePopupClose = null;
+  #handleFavoriteClick = null;
+  #handleWatchlistClick = null;
+  #handleAlreadyWatchedClick = null;
+  #handlePopupRerender = null;
 
-
-  constructor({film, onClick}) {
+  constructor({film, onClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick, onPopupRerender}) {
     super();
     this.#film = film;
     this.#handlePopupClose = onClick;
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.#handleWatchlistClick = onWatchlistClick;
+    this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
+    this.#handlePopupRerender = onPopupRerender;
 
-    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#popupCloseHandler);
+    this.element.querySelector('.film-details__close-btn')
+      .addEventListener('click', this.#popupCloseHandler);
+
+    this.element.querySelector('.film-details__control-button--favorite')
+      .addEventListener('click', this.#favoriteClickHandler);
+    this.element.querySelector('.film-details__control-button--watchlist')
+      .addEventListener('click', this.#watchlistClickHandler);
+    this.element.querySelector('.film-details__control-button--watched')
+      .addEventListener('click', this.#alreadyWatchedClickHandler);
   }
 
   get template() {
@@ -144,6 +161,24 @@ export default class PopupFilmsContainerView extends AbstractView {
   #popupCloseHandler = (evt) => {
     evt.preventDefault();
     this.#handlePopupClose();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick(this.#film);
+    this.#handlePopupRerender(this.#film);
+  };
+
+  #watchlistClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleWatchlistClick(this.#film);
+    this.#handlePopupRerender(this.#film);
+  };
+
+  #alreadyWatchedClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleAlreadyWatchedClick(this.#film);
+    this.#handlePopupRerender(this.#film);
   };
 
 }

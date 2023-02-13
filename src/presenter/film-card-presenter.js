@@ -1,27 +1,30 @@
 import {render, remove, replace} from '../framework/render';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, END_POINT, AUTHORIZATION} from '../const.js';
 import PopupPresenter from './popup-presenter';
 import FilmCardView from '../view/film-card-view';
 import CommentModel from '../model/comment-model';
+import CommentsApiService from '../comments-api-service';
+
 
 const bodyElement = document.body;
 
-
 export default class FilmCardPresenter {
+  #commentModel = new CommentModel({
+    commentsApiService: new CommentsApiService(END_POINT, AUTHORIZATION)
+  });
 
-  #commentModel = new CommentModel();
+  #filmsModel = null;
   #handleDataChange = null;
   #popupPresenter = null;
   #filmsListContainer = null;
   #filmComponent = null;
   #handlePopupChange = null;
 
-  constructor({filmsListContainer, onDataChange, onPopupChange}) {
+  constructor({filmsListContainer, onDataChange, onPopupChange, filmsModel }) {
     this.#filmsListContainer = filmsListContainer;
     this.#handleDataChange = onDataChange;
     this.#handlePopupChange = onPopupChange;
-
-    this.#commentModel.addObserver(this.#handleModelEvent);
+    this.#filmsModel = filmsModel;
   }
 
   #openPopup = (film) => {
@@ -37,10 +40,14 @@ export default class FilmCardPresenter {
   }
 
   init = (film) => {
+    this.#commentModel.init(film);
+
     this.#popupPresenter = new PopupPresenter({
       popupContainer: bodyElement,
       commentModel: this.#commentModel,
       onDataChange: this.#handleViewAction,
+      onFilmChange: this.#handleDataChange,
+      filmsModel: this.#filmsModel,
     });
 
     const prevFilmComponent = this.#filmComponent;
@@ -76,28 +83,6 @@ export default class FilmCardPresenter {
         break;
     }
   };
-
-  #handleModelEvent = (updateType, data) => {
-    // eslint-disable-next-line no-console
-    console.log(updateType, data);
-
-    switch (updateType) {
-      case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
-        // this.#filmCardPresenterList.get(data.id).init(data);
-        break;
-      case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
-        //this.#clearFilmsList();
-        //this.#renderFilmsList();
-        //console.log('обновить список комментов');
-        break;
-      case UpdateType.MAJOR:
-        // - обновить весь попап
-        break;
-    }
-  };
-
 
   #handleFavoriteClick = (film) => {
     const newFilm = structuredClone(film);
