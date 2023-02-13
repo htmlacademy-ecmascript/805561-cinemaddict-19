@@ -22,7 +22,6 @@ export default class CommentModel extends Observable {
     } catch(err) {
       this.#comments = [];
     }
-    //this._notify(UpdateType.INIT);
   }
 
   async addComment(updateType, update) {

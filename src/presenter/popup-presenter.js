@@ -66,7 +66,8 @@ export default class PopupPresenter {
     render(this.#popupFilmContainer, this.#PopupInnerComponent.element);
     render(this.#popupCommentsContainer, this.#PopupInnerComponent.element);
 
-    this.#popupCommentsContainer.reset(commentContainerData);
+    //this.#popupCommentsContainer.reset(commentContainerData);
+    this.#popupCommentsContainer.reset();
   };
 
   #rerenderpopupFilmContainer = (film) => {
@@ -86,7 +87,18 @@ export default class PopupPresenter {
       evt.preventDefault();
       this.closePopup();
     }
+    const isCtrlCmd = (evt.key === 'Control' || evt.key === 'Ctrl') || (evt.key === 'Command' || evt.key === 'Cmd');
+    const isEnter = evt.key === 'Enter' || evt.key === 'Enter';
+    if (/*isCtrlCmd &&*/ isEnter ) {
+      //evt.preventDefault();
+      //this.closePopup();
+      console.log('Сработал Enter');
+      this.#popupCommentsContainer.commentSendHandler();
+      this.#popupCommentsContainer.reset();
+    }
   };
+
+
 
   #handleFormSubmit = (update) => {
     this.#handleDataChange(
@@ -94,6 +106,7 @@ export default class PopupPresenter {
       UpdateType.MAJOR,
       update,
     );
+    //update щбъект, содержит filmId, comment, где comment  - объект с эмодзи и текстом комментария
   };
 
   #handleDeleteClick = (commentId) => {

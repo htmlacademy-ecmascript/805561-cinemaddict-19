@@ -115,16 +115,20 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
   }
 
   get template() {
-    console.log(this._state);
+    //console.log(this._state);
     return createPopupCommentsContainerTemplate(this._state);
   }
 
-  reset(commentContainerData) {
+  reset(/*commentContainerData*/) {
     //console.log('reset');
     //console.log(this._state);
-    this.updateElement(
+
+    /*this.updateElement(
       PopupCommentsContainerView.parseCommentToState(commentContainerData),
-    );
+    );*/
+    //this.updateElement(this._state);
+    this.updateElement(PopupCommentsContainerView.parseStateToComments(this._state));
+
     /*this.updateElement({
       newComment: {
         emotion: null,
@@ -143,10 +147,6 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
         }
       });
 
-    //функция отправки комментария по Ctrl/Command + Enter
-    this.element.querySelector('.film-details__new-comment')
-      .addEventListener('submit', this.#commentSendHandler);
-
     this.element.querySelectorAll('.film-details__comment-delete')
       .forEach((item) =>{
         item.addEventListener('click', this.#commentDeleteClickHandler);
@@ -155,8 +155,29 @@ export default class PopupCommentsContainerView extends AbstractStatefulView {
       .addEventListener('input', this.#commentInputHandler);
   }
 
-  #commentSendHandler = () => {
-    this.#handleFormSubmit(PopupCommentsContainerView.parseStateToComments(this._state));
+  commentSendHandler = () => {
+    //const newComment = PopupCommentsContainerView.parseStateToComments(this._state);
+    const newComment = this._state.newComment;
+    const filmId = this.#film.id;
+    if(filmId && newComment){
+
+    }
+    this.#handleFormSubmit({
+      filmId,
+      newComment
+    });
+    /*console.log('форма отправилась');
+    console.log(filmId);
+    console.log(newComment);
+    console.log(this._state);
+    console.log(PopupCommentsContainerView.parseStateToComments(this._state));*/
+
+    this.updateElement({
+      newComment: {
+        emotion: null,
+        comment: '',
+      }
+    });
   };
 
   #commentInputHandler = (evt) => {
